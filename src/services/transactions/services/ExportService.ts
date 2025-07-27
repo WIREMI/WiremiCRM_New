@@ -377,80 +377,62 @@ export class ExportService {
       details += `<tr><td>Account Email:</td><td>${metadata.accountEmail || transaction.userId}</td></tr>`;
     } else if (transaction.method === 'CARD_FUNDING') {
       details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Card Number:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">****-****-****-${metadata.cardLast4 || 'N/A'}</td></tr>`;
-    details += `</table></div>`;
     } else if (transaction.method === 'CARD_MAINTENANCE') {
       details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Card Number:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">****-****-****-${metadata.cardLast4 || 'N/A'}</td></tr>`;
       details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Maintenance Type:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${metadata.maintenanceType || 'N/A'}</td></tr>`;
     }
 
-      <div class="section">
-        <h3>💸 Withdrawal Details</h3>
-        <table class="info-table">
-          <tr><td>Account Name:</td><td>${transaction.userId}</td></tr>
-          <tr><td>Withdrawal Method:</td><td>${this.formatMethod(transaction.method)}</td></tr>
+    details += `</table></div>`;
+    return details;
+  }
+
+  private generateSavingsDetails(transaction: any, metadata: any): string {
     let details = `
       <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
         <h3 style="color: #1e40af; margin-top: 0;">Savings Details</h3>
         <table style="width: 100%; border-collapse: collapse;">
-      details += `<tr><td>Mobile Money Number:</td><td>${metadata.momoNumber || 'N/A'}</td></tr>`;
           <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Savings Operation:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${this.formatMethod(transaction.method)}</td></tr>
-      details += `<tr><td>Bank Name:</td><td>${metadata.bankName || 'N/A'}</td></tr>`;
-      details += `<tr><td>Account Number:</td><td>${metadata.accountNumber || 'N/A'}</td></tr>`;
+    `;
+
     if (metadata.savingsGoalId) {
-      details += `<tr><td>Interac Email:</td><td>${metadata.interacEmail || 'N/A'}</td></tr>`;
-    }
-      details += `<tr><td>ATM Location:</td><td>${metadata.atmLocation || 'N/A'}</td></tr>`;
-      details += `<tr><td>ATM ID:</td><td>${metadata.atmId || 'N/A'}</td></tr>`;
+      details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Savings Goal ID:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${metadata.savingsGoalId}</td></tr>`;
     }
     if (metadata.interestRate) {
-    details += `</table></div>`;
+      details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Interest Rate:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${metadata.interestRate}%</td></tr>`;
     }
     if (metadata.maturityDate) {
       details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Maturity Date:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${new Date(metadata.maturityDate).toLocaleDateString()}</td></tr>`;
     }
 
-      <div class="section">
-        <h3>🔄 Transfer Details</h3>
-        <table class="info-table">
-          <tr><td>Sender Name:</td><td>${transaction.userId}</td></tr>
-          <tr><td>Sender Wiremi ID:</td><td>${transaction.userId}</td></tr>
-          <tr><td>Transfer Method:</td><td>${this.formatMethod(transaction.method)}</td></tr>
+    details += `</table></div>`;
+    return details;
+  }
+
+  private generateSubscriptionDetails(transaction: any, metadata: any): string {
     let details = `
       <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
         <h3 style="color: #1e40af; margin-top: 0;">Subscription Details</h3>
         <table style="width: 100%; border-collapse: collapse;">
-      details += `<tr><td>Exchange Rate:</td><td>${transaction.exchangeRate}</td></tr>`;
           <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Subscription Type:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${this.formatMethod(transaction.method)}</td></tr>
     `;
 
     if (metadata.subscriptionPeriod) {
-      details += `<tr><td>Receiver Name:</td><td>${metadata.receiverName || 'N/A'}</td></tr>`;
-      details += `<tr><td>Receiver Wiremi ID:</td><td>${metadata.receiverWiremiId || 'N/A'}</td></tr>`;
+      details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Subscription Period:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${metadata.subscriptionPeriod}</td></tr>`;
     }
-      details += `<tr><td>Receiver Name:</td><td>${metadata.receiverName || 'N/A'}</td></tr>`;
-      details += `<tr><td>Receiver MoMo Number:</td><td>${metadata.receiverMomoNumber || 'N/A'}</td></tr>`;
-      details += `<tr><td>Receiver Country:</td><td>${metadata.receiverCountry || 'N/A'}</td></tr>`;
+    if (metadata.subscriptionStartDate) {
       details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Start Date:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${new Date(metadata.subscriptionStartDate).toLocaleDateString()}</td></tr>`;
-      details += `<tr><td>Receiver Name:</td><td>${metadata.receiverName || 'N/A'}</td></tr>`;
-      details += `<tr><td>Receiver Bank:</td><td>${metadata.receiverBank || 'N/A'}</td></tr>`;
-      details += `<tr><td>Account Number:</td><td>${metadata.receiverAccountNumber || 'N/A'}</td></tr>`;
-      details += `<tr><td>Receiver Country:</td><td>${metadata.receiverCountry || 'N/A'}</td></tr>`;
     }
-      details += `<tr><td>Receiver Name:</td><td>${metadata.receiverName || 'N/A'}</td></tr>`;
-      details += `<tr><td>Receiver Interac Email:</td><td>${metadata.receiverInteracEmail || 'N/A'}</td></tr>`;
-      details += `<tr><td>Bank:</td><td>${metadata.bankName || 'N/A'}</td></tr>`;
+    if (metadata.subscriptionEndDate) {
+      details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>End Date:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${new Date(metadata.subscriptionEndDate).toLocaleDateString()}</td></tr>`;
+    }
+    if (metadata.features && Array.isArray(metadata.features)) {
       details += `<tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Features:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${metadata.features.join(', ')}</td></tr>`;
-    }
-    // Add amount details
-    details += `<tr><td>Amount Sent:</td><td class="amount-highlight">${this.formatCurrency(transaction.amount, transaction.currency)}</td></tr>`;
-    if (metadata.receiverAmount && metadata.receiverCurrency) {
-      details += `<tr><td>Receiver Amount:</td><td class="amount-highlight">${this.formatCurrency(metadata.receiverAmount, metadata.receiverCurrency)}</td></tr>`;
     }
 
     details += `</table></div>`;
-    details += `</table></div>`;
     return details;
   }
+
   /**
    * Get deposit icon based on method
    */
@@ -478,14 +460,6 @@ export class ExportService {
 
   private formatMethod(method: string): string { // Helper to format method
     const methodMap: { [key: string]: string } = {
-
-  private formatCurrency(amount: number, currency: string): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 2
-    }).format(amount);
-  }
       'MOMO_MTN': 'MoMo (MTN)',
       'MOMO_ORANGE': 'MoMo (ORANGE)',
       'BANK': 'Bank',
