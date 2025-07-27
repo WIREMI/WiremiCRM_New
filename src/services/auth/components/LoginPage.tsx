@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Shield, AlertCircle } from 'lucide-react';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 interface LoginFormData {
   email: string;
@@ -19,6 +20,7 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showCaptcha, setShowCaptcha] = useState(false);
+  const { isDark } = useTheme();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,27 +28,72 @@ const LoginPage: React.FC = () => {
     setError('');
 
     try {
-      // TODO: Implement login API call
-      // const response = await authService.login(formData);
+      // Generate device fingerprint (simplified)
+      const deviceFingerprint = generateDeviceFingerprint();
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // TODO: Handle MFA if required
-      // if (response.requiresMfa) {
-      //   navigate('/auth/2fa', { state: { mfaToken: response.mfaToken } });
-      //   return;
-      // }
-      
-      // TODO: Store tokens and redirect
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          deviceFingerprint,
+          rememberDevice: formData.rememberDevice
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+
+      if (data.requiresMfa) {
+        navigate('/auth/2fa', { state: { mfaToken: data.mfaToken } });
+        return;
+      }
+
+      // Login successful, redirect to dashboard
       navigate('/dashboard');
     } catch (err) {
-      setError('Invalid email or password');
-      // TODO: Show CAPTCHA after failed attempts
-      setShowCaptcha(true);
+      console.error('Login error:', err);
+      setError(err instanceof Error ? err.message : 'Invalid email or password');
+      
+      // Show CAPTCHA after failed attempts
+      if (err instanceof Error && err.message.includes('too many attempts')) {
+        setShowCaptcha(true);
+      }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const generateDeviceFingerprint = (): string => {
+    // Simple device fingerprinting - in production, use a more robust solution
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx?.fillText('Device fingerprint', 10, 10);
+    
+    const fingerprint = [
+      navigator.userAgent,
+      navigator.language,
+      screen.width + 'x' + screen.height,
+      new Date().getTimezoneOffset(),
+      canvas.toDataURL()
+    ].join('|');
+    
+    // Simple hash function
+    let hash = 0;
+    for (let i = 0; i < fingerprint.length; i++) {
+      const char = fingerprint.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    
+    return Math.abs(hash).toString(16);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +105,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-dark-900 dark:to-dark-800 flex items-center justify-center p-4 transition-colors">
+    <div className={`min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 ${isDark ? 'dark:from-dark-900 dark:to-dark-800' : ''} flex items-center justify-center p-4 transition-colors`}>
       <div className="max-w-md w-full">
         <div className="bg-white dark:bg-dark-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-dark-700">
           <div className="text-center mb-8">
@@ -160,9 +207,9 @@ const LoginPage: React.FC = () => {
           <div className="mt-8 text-center">
             <p className="text-gray-600 dark:text-dark-400">
               Don't have an account?{' '}
-              <Link to="/auth/register" className="text-blue-600 hover:text-blue-700 font-medium">
-                Sign up
-              </Link>
+              <span className="text-gray-500 dark:text-dark-500">
+                Contact your administrator for access
+              </span>
             </p>
           </div>
         </div>

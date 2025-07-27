@@ -5,6 +5,7 @@ import { DeviceService } from './DeviceService';
 import { SessionService } from './SessionService';
 import { EmailService } from './EmailService';
 import { MfaService } from './MfaService';
+import { prisma } from '../../../config/database';
 
 export class AuthService {
   private tokenService: TokenService;
@@ -54,7 +55,10 @@ export class AuthService {
     // TODO: Rate limiting check
     // TODO: CAPTCHA validation if required
     
-    const user = await this.findUserByEmail(loginData.email);
+    const user = await prisma.user.findUnique({
+      where: { email: loginData.email.toLowerCase() }
+    });
+    
     if (!user) {
       throw new Error('Invalid credentials');
     }
@@ -108,6 +112,72 @@ export class AuthService {
       refreshToken,
       requiresMfa: false
     };
+  }
+
+  /**
+   * Onboard a new admin user (internal process)
+   */
+  async onboardAdminUser(userData: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+    role: string;
+    createdBy: string;
+    sendWelcomeEmail?: boolean;
+  }): Promise<User> {
+    const { email, firstName, lastName, password, role, createdBy, sendWelcomeEmail } = userData;
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() }
+    });
+
+    if (existingUser) {
+      throw new Error('User with this email already exists');
+    }
+
+    // Validate password strength
+    if (password.length < 8) {
+      throw new Error('Password must be at least 8 characters long');
+    }
+
+    // Hash password
+    const passwordHash = await this.hashPassword(password);
+
+    // Create user
+    const user = await prisma.user.create({
+      data: {
+        email: email.toLowerCase(),
+        passwordHash,
+        firstName,
+        lastName,
+        isActive: true, // Admin users are active immediately
+        isLocked: false,
+        lockoutCount: 0,
+        emailVerifiedAt: new Date(), // Admin emails are pre-verified
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
+
+    // TODO: Assign role to user in role management system
+    console.log(`Assigning role ${role} to user ${user.id}`);
+
+    // Send welcome email if requested
+    if (sendWelcomeEmail) {
+      try {
+        await this.emailService.sendAdminWelcomeEmail(email, firstName, password);
+      } catch (error) {
+        console.error('Failed to send welcome email:', error);
+        // Don't fail the user creation if email fails
+      }
+    }
+
+    // Log admin creation
+    console.log(`Admin user created: ${email} by ${createdBy} with role ${role}`);
+
+    return this.sanitizeUser(user);
   }
 
   async verifyMfa(mfaToken: string, code: string): Promise<LoginResponse> {
@@ -243,18 +313,44 @@ export class AuthService {
   }
 
   private async resetLockoutCount(userId: string): Promise<void> {
-    // TODO: Database update
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        lockoutCount: 0,
+        isLocked: false,
+        updatedAt: new Date()
+      }
+    });
   }
 
   private async updateLastLogin(userId: string): Promise<void> {
-    // TODO: Database update
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        lastLoginAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
   }
 
   private async updatePassword(userId: string, passwordHash: string): Promise<void> {
-    // TODO: Database update
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        passwordHash,
+        updatedAt: new Date()
+      }
+    });
   }
 
   private async activateUser(userId: string): Promise<void> {
-    // TODO: Database update
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        isActive: true,
+        emailVerifiedAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
   }
 }

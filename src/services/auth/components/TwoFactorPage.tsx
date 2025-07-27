@@ -30,16 +30,29 @@ const TwoFactorPage: React.FC = () => {
     }
 
     try {
-      // TODO: Implement MFA verification API call
-      // const response = await authService.verifyMfa(mfaToken, code);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // TODO: Store tokens and redirect
+      const response = await fetch('/api/auth/verify-mfa', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          mfaToken,
+          code: code.trim()
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'MFA verification failed');
+      }
+
+      // MFA verification successful, redirect to dashboard
       navigate('/dashboard');
     } catch (err) {
-      setError(useBackupCode ? 'Invalid backup code' : 'Invalid verification code');
+      console.error('MFA verification error:', err);
+      setError(err instanceof Error ? err.message : (useBackupCode ? 'Invalid backup code' : 'Invalid verification code'));
     } finally {
       setIsLoading(false);
     }

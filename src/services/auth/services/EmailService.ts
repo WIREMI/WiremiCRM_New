@@ -47,6 +47,11 @@ export class EmailService {
     await this.sendEmail(email, template);
   }
 
+  async sendAdminWelcomeEmail(email: string, firstName: string, temporaryPassword: string): Promise<void> {
+    const template = this.getAdminWelcomeEmailTemplate(firstName, temporaryPassword);
+    
+    await this.sendEmail(email, template);
+  }
   private async sendEmail(to: string, template: EmailTemplate): Promise<void> {
     // TODO: Implement actual email sending using your preferred service
     // (SendGrid, AWS SES, Nodemailer, etc.)
@@ -149,6 +154,35 @@ export class EmailService {
         </div>
       `,
       text: `Your Wiremi CRM account is temporarily locked until ${unlockTime.toLocaleString()}.`
+    };
+  }
+
+  private getAdminWelcomeEmailTemplate(firstName: string, temporaryPassword: string): EmailTemplate {
+    return {
+      subject: 'Welcome to Wiremi CRM - Admin Account Created',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #1f2937;">Welcome to Wiremi CRM, ${firstName}!</h2>
+          <p>Your administrator account has been created successfully. You can now access the Wiremi CRM system with the following credentials:</p>
+          <div style="background-color: #f3f4f6; padding: 15px; border-radius: 6px; margin: 20px 0;">
+            <p><strong>Email:</strong> ${firstName}@wiremi.com</p>
+            <p><strong>Temporary Password:</strong> <code style="background: #e5e7eb; padding: 2px 4px; border-radius: 3px;">${temporaryPassword}</code></p>
+          </div>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${this.baseUrl}/auth/login" 
+               style="background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+              Login to Wiremi CRM
+            </a>
+          </div>
+          <div style="background-color: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 15px; margin: 20px 0;">
+            <p style="color: #92400e; margin: 0;"><strong>Important:</strong> Please change your password immediately after your first login for security purposes.</p>
+          </div>
+          <p style="color: #6b7280; font-size: 14px;">
+            If you have any questions or need assistance, please contact the IT administrator.
+          </p>
+        </div>
+      `,
+      text: `Welcome to Wiremi CRM, ${firstName}! Your admin account has been created. Email: ${firstName}@wiremi.com, Temporary Password: ${temporaryPassword}. Please login at ${this.baseUrl}/auth/login and change your password immediately.`
     };
   }
 }

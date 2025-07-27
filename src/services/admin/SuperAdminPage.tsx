@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Settings, Users, Shield, Database, Activity, AlertTriangle, CheckCircle, Clock, BarChart3, Globe } from 'lucide-react';
 import PageHeader from '../../components/Common/PageHeader';
 import StatsCard from '../../components/Common/StatsCard';
+import AdminOnboardingModal from './components/AdminOnboardingModal';
 
 interface SystemMetrics {
   totalUsers: number;
@@ -27,6 +28,7 @@ const SuperAdminPage: React.FC = () => {
   const [serviceStatuses, setServiceStatuses] = useState<ServiceStatus[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showOnboardingModal, setShowOnboardingModal] = useState(false);
 
   useEffect(() => {
     loadSystemData();
@@ -158,6 +160,14 @@ const SuperAdminPage: React.FC = () => {
     }
   };
 
+  const handleOnboardingSuccess = () => {
+    setShowOnboardingModal(false);
+    // Show success message
+    alert('Admin user created successfully!');
+    // Optionally reload system data to update user counts
+    loadSystemData();
+  };
+
   const tabs = [
     { id: 'overview', label: 'System Overview', icon: BarChart3 },
     { id: 'services', label: 'Service Status', icon: Activity },
@@ -198,6 +208,13 @@ const SuperAdminPage: React.FC = () => {
             >
               <Settings size={16} className="mr-2" />
               Maintenance Mode
+            </button>
+            <button
+              onClick={() => setShowOnboardingModal(true)}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center"
+            >
+              <Users size={16} className="mr-2" />
+              Add Admin User
             </button>
           </div>
         }
@@ -385,6 +402,13 @@ const SuperAdminPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Admin Onboarding Modal */}
+      <AdminOnboardingModal
+        isOpen={showOnboardingModal}
+        onClose={() => setShowOnboardingModal(false)}
+        onSuccess={handleOnboardingSuccess}
+      />
     </div>
   );
 };

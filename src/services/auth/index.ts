@@ -20,7 +20,6 @@ export { RateLimiter } from './middleware/rateLimiter';
 
 // Components
 export { default as LoginPage } from './components/LoginPage';
-export { default as RegisterPage } from './components/RegisterPage';
 export { default as TwoFactorPage } from './components/TwoFactorPage';
 export { default as AccountSettingsPage } from './components/AccountSettingsPage';
 

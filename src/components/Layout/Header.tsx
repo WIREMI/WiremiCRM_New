@@ -1,10 +1,12 @@
 import React from 'react';
 import { Bell, Search, User, Settings, Moon, Sun, Plus } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useNavigate } from 'react-router-dom';
 import NotificationModal from '../Common/NotificationModal';
 
 const Header: React.FC = () => {
   const { isDark, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = React.useState(false);
   const [notifications, setNotifications] = React.useState([
     {
@@ -71,6 +73,19 @@ const Header: React.FC = () => {
     setNotifications(prev => prev.map(notification => ({ ...notification, isRead: true })));
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Redirect to login regardless of API response
+      navigate('/auth/login');
+    }
+  };
   return (
     <>
       <header className="bg-white dark:bg-dark-800 shadow-sm border-b border-gray-200 dark:border-dark-700 px-6 py-3 transition-colors">
@@ -119,11 +134,32 @@ const Header: React.FC = () => {
                 <div className="font-medium text-gray-900 dark:text-dark-100">Michael Joe</div>
                 <div className="text-gray-500 dark:text-dark-400 text-xs">@michaeljoe@email.com</div>
               </div>
-              <button className="p-1 hover:bg-gray-100 dark:hover:bg-dark-700 rounded transition-colors">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
-                  <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
+              <div className="relative group">
+                <button className="p-1 hover:bg-gray-100 dark:hover:bg-dark-700 rounded transition-colors">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+                
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-800 rounded-md shadow-lg border border-gray-200 dark:border-dark-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="py-1">
+                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-dark-300 hover:bg-gray-100 dark:hover:bg-dark-700">
+                      Profile Settings
+                    </button>
+                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-dark-300 hover:bg-gray-100 dark:hover:bg-dark-700">
+                      Account Preferences
+                    </button>
+                    <hr className="my-1 border-gray-200 dark:border-dark-600" />
+                    <button 
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-dark-700"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -14,6 +14,10 @@ export interface User {
   updatedAt: Date;
 }
 
+export interface AdminUser extends Omit<User, 'passwordHash'> {
+  role: string;
+  permissions: string[];
+}
 export interface CreateUserRequest {
   email: string;
   password: string;
@@ -43,4 +47,14 @@ export interface UserProfile extends Omit<User, 'passwordHash'> {
   permissions: string[];
   trustedDevices: number;
   mfaEnabled: boolean;
+}
+
+export interface OnboardAdminRequest {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  role: string;
+  createdBy: string;
+  sendWelcomeEmail?: boolean;
 }
