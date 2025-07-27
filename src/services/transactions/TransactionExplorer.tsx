@@ -133,7 +133,29 @@ const TransactionExplorer: React.FC = () => {
 
   const handleExport = async (format: 'CSV' | 'XLSX' | 'PDF') => {
     console.log(`Scheduling export for format: ${format} with filters:`, filters);
-    // TODO: Call /api/v1/transactions/export API
+    try {
+      const response = await fetch('/api/v1/transactions/export', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          format,
+          filters: { ...filters, activeTab }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Export request failed');
+      }
+
+      const data = await response.json();
+      alert(`Export job scheduled successfully! Job ID: ${data.data.id}`);
+    } catch (error) {
+      console.error('Export error:', error);
+      alert('Failed to schedule export. Please try again.');
+    }
   };
 
   const handleOpenDepositModal = () => {
