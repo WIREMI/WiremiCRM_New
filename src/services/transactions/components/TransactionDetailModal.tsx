@@ -1,7 +1,8 @@
 import React, { useState, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { X, Flag, MessageSquare, RefreshCcw, Download, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { X, Flag, MessageSquare, RefreshCcw, Download, CheckCircle, XCircle, AlertTriangle, Eye, Printer } from 'lucide-react';
 import { TransactionWithRelations } from '../services/TransactionService';
+import { ExportService } from '../services/ExportService';
 
 interface TransactionDetailModalProps {
   isOpen: boolean;
@@ -16,11 +17,15 @@ const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
   transaction, 
   onTransactionUpdated 
 }) => {
-  const [activeTab, setActiveTab] = useState<'details' | 'notes' | 'flags' | 'actions'>('details');
+  const [activeTab, setActiveTab] = useState<'details' | 'receipt' | 'notes' | 'flags' | 'actions'>('details');
   const [newNoteContent, setNewNoteContent] = useState('');
   const [flagReason, setFlagReason] = useState('');
   const [flagSeverity, setFlagSeverity] = useState('MEDIUM');
   const [loading, setLoading] = useState(false);
+  const [receiptHtml, setReceiptHtml] = useState<string>('');
+  const [loadingReceipt, setLoadingReceipt] = useState(false);
+
+  const exportService = new ExportService();
 
   // Mock user roles - in real app, get from auth context
   const currentUserRoles = ['super_admin'];
@@ -72,11 +77,48 @@ const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
 
   const handleDownloadReceipt = async () => {
     try {
-      // TODO: Call API
+      // TODO: Replace with actual API call
       console.log(`Downloading receipt for ${transaction.id}`);
-      alert(`Receipt for ${transaction.id} would be downloaded`);
+      
+      const receiptBuffer = await exportService.generatePdfReceipt(transaction.id);
+      if (receiptBuffer) {
+        // Create blob and download
+        const blob = new Blob([receiptBuffer], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `wiremi-receipt-${transaction.id}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
     } catch (error) {
       console.error('Error downloading receipt:', error);
+      alert('Failed to generate receipt. Please try again.');
+    }
+  };
+
+  const handleViewReceipt = async () => {
+    if (receiptHtml) {
+      setActiveTab('receipt');
+      return;
+    }
+
+    setLoadingReceipt(true);
+    try {
+      const receiptBuffer = await exportService.generatePdfReceipt(transaction.id);
+      if (receiptBuffer) {
+        // Convert buffer to HTML string for preview
+        const htmlContent = receiptBuffer.toString();
+        setReceiptHtml(htmlContent);
+        setActiveTab('receipt');
+      }
+    } catch (error) {
+      console.error('Error generating receipt preview:', error);
+      alert('Failed to generate receipt preview.');
+    } finally {
+      setLoadingReceipt(false);
     }
   };
 
@@ -174,6 +216,7 @@ const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
                     <nav className="-mb-px flex space-x-8">
                       {[
                         { id: 'details', label: 'Details', icon: MessageSquare },
+                        { id: 'receipt', label: 'Receipt', icon: Eye },
                         { id: 'notes', label: `Notes (${transaction.notes?.length || 0})`, icon: MessageSquare },
                         { id: 'flags', label: `Flags (${transaction.flags?.length || 0})`, icon: Flag },
                         { id: 'actions', label: 'Actions', icon: RefreshCcw },
@@ -316,6 +359,63 @@ const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
                       </div>
                     )}
 
+                    {activeTab === 'receipt' && (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-md font-semibold text-gray-800 dark:text-dark-200">Transaction Receipt</h4>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={handleViewReceipt}
+                              disabled={loadingReceipt}
+                              className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center text-sm"
+                            >
+                              {loadingReceipt ? (
+                                <>
+                                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                  Loading...
+                                </>
+                              ) : (
+                                <>
+                                  <Eye size={16} className="mr-2" />
+                                  Refresh Preview
+                                </>
+                              )}
+                            </button>
+                            <button
+                              onClick={handleDownloadReceipt}
+                              className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center text-sm"
+                            >
+                              <Download size={16} className="mr-2" />
+                              Download PDF
+                            </button>
+                          </div>
+                        </div>
+                        
+                        {receiptHtml ? (
+                          <div className="border border-gray-200 dark:border-dark-600 rounded-lg overflow-hidden">
+                            <div 
+                              className="receipt-preview bg-white p-4 max-h-96 overflow-y-auto"
+                              dangerouslySetInnerHTML={{ __html: receiptHtml }}
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-center py-12 border border-gray-200 dark:border-dark-600 rounded-lg">
+                            <Printer className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                            <p className="text-gray-500 dark:text-dark-400 mb-4">
+                              Click "Refresh Preview" to generate the receipt preview
+                            </p>
+                            <button
+                              onClick={handleViewReceipt}
+                              disabled={loadingReceipt}
+                              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                            >
+                              {loadingReceipt ? 'Generating...' : 'Generate Receipt Preview'}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {activeTab === 'notes' && (
                       <div className="space-y-4">
                         <div className="space-y-3">
@@ -441,6 +541,14 @@ const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
                           >
                             <Download size={16} className="mr-2" />
                             Download PDF Receipt
+                          </button>
+                          <button
+                            onClick={handleViewReceipt}
+                            disabled={loadingReceipt}
+                            className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                          >
+                            <Eye size={16} className="mr-2" />
+                            {loadingReceipt ? 'Loading...' : 'View Receipt Preview'}
                           </button>
                         </div>
                       </div>

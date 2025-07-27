@@ -60,13 +60,30 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
   const handleDownloadReceipt = async (transactionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      // TODO: Call actual API
-      console.log(`Downloading receipt for transaction: ${transactionId}`);
-      // Mock download
-      alert(`Receipt for ${transactionId} would be downloaded`);
+      const response = await fetch(`/api/v1/transactions/${transactionId}/receipt`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate receipt');
+      }
+
+      // Get the PDF blob
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `wiremi-receipt-${transactionId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading receipt:', error);
-      alert('Failed to download receipt.');
+      alert('Failed to download receipt. Please try again.');
     }
   };
 

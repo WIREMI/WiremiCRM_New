@@ -244,14 +244,22 @@ router.get('/:id/receipt',
   async (req: AuthenticatedRequest, res) => {
     try {
       const transactionId = req.params.id;
-      const receiptBuffer = await exportService.generatePdfReceipt(transactionId);
+      
+      // Get transaction details first
+      const transaction = await transactionService.getTransactionById(transactionId);
+      if (!transaction) {
+        return res.status(404).json({ success: false, error: 'Transaction not found' });
+      }
+
+      const receiptBuffer = await exportService.generatePdfReceipt(transaction);
 
       if (!receiptBuffer) {
-        return res.status(404).json({ success: false, error: 'Receipt not found or could not be generated' });
+        return res.status(500).json({ success: false, error: 'Failed to generate receipt' });
       }
 
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=transaction_receipt_${transactionId}.pdf`);
+      res.setHeader('Content-Disposition', `attachment; filename=wiremi-receipt-${transactionId}.pdf`);
+      res.setHeader('Content-Length', receiptBuffer.length.toString());
       res.send(receiptBuffer);
     } catch (error) {
       console.error('Error generating PDF receipt:', error);
