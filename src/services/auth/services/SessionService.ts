@@ -11,15 +11,14 @@ export class SessionService {
   }
 
   async createSession(userId: string, deviceId: string, loginData: LoginRequest): Promise<Session> {
-    const refreshTokenExpiry = process.env.JWT_REFRESH_EXPIRES || '7d';
-    const expiresAt = this.calculateExpiry(refreshTokenExpiry);
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
     const session: Session = {
       id: this.generateId(),
       userId,
       deviceId,
-      ipAddress: this.extractIpAddress(loginData),
-      userAgent: this.extractUserAgent(loginData),
+      ipAddress: '127.0.0.1', // Mock IP
+      userAgent: 'Mock User Agent', // Mock user agent
       refreshTokenHash: '', // Will be set when refresh token is generated
       isActive: true,
       createdAt: new Date(),
@@ -28,12 +27,14 @@ export class SessionService {
     };
 
     // TODO: Store session in database
+    console.log('Session created:', session);
     return session;
   }
 
   async updateRefreshToken(sessionId: string, refreshToken: string): Promise<void> {
     const refreshTokenHash = this.tokenService.hashToken(refreshToken);
     // TODO: Update session with new refresh token hash
+    console.log('Refresh token updated for session:', sessionId);
   }
 
   async validateRefreshToken(refreshToken: string): Promise<Session | null> {

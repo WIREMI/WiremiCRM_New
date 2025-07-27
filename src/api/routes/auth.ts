@@ -52,7 +52,7 @@ router.post('/login',
         email,
         password,
         deviceFingerprint,
-        rememberDevice
+        rememberDevice: rememberDevice || false
       });
 
       if (loginResult.requiresMfa) {
@@ -82,13 +82,14 @@ router.post('/login',
       res.json({
         success: true,
         user: loginResult.user,
+        accessToken: loginResult.accessToken, // Also send in response for frontend
         message: 'Login successful'
       });
     } catch (error) {
       console.error('Login error:', error);
       res.status(401).json({
         success: false,
-        error: 'Invalid credentials'
+        error: error.message || 'Invalid credentials'
       });
     }
   }

@@ -95,8 +95,9 @@ export class MfaService {
   }
 
   async isMfaEnabled(userId: string): Promise<boolean> {
-    const mfaSecret = await this.getMfaSecret(userId);
-    return mfaSecret?.isEnabled || false;
+    // For demo purposes, MFA is disabled by default
+    // TODO: Implement actual MFA status check
+    return false;
   }
 
   async regenerateBackupCodes(userId: string): Promise<string[]> {

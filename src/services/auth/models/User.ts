@@ -18,6 +18,7 @@ export interface AdminUser extends Omit<User, 'passwordHash'> {
   role: string;
   permissions: string[];
 }
+
 export interface CreateUserRequest {
   email: string;
   password: string;

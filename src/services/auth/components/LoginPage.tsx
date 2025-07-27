@@ -56,11 +56,19 @@ const LoginPage: React.FC = () => {
         return;
       }
 
+      // Store user info in localStorage for demo purposes
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+      if (data.accessToken) {
+        localStorage.setItem('accessToken', data.accessToken);
+      }
+
       // Login successful, redirect to dashboard
       navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
-      setError(err instanceof Error ? err.message : 'Invalid email or password');
+      setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');
       
       // Show CAPTCHA after failed attempts
       if (err instanceof Error && err.message.includes('too many attempts')) {
