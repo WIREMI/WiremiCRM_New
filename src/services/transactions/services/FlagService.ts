@@ -1,4 +1,3 @@
-import { prisma } from '../../../config/database';
 import { TransactionService } from './TransactionService';
 
 export class FlagService {

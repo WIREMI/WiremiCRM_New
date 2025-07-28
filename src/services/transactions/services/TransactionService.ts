@@ -1,4 +1,3 @@
-import { prisma } from '../../../config/database';
 
 export interface TransactionWithRelations {
   id: string;

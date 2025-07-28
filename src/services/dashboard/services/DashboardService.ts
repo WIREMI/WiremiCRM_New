@@ -1,5 +1,3 @@
-import { prisma } from '../../../config/database';
-import { DashboardConfig, Widget } from '@prisma/client';
 import { metricService } from './MetricService';
 
 export interface DashboardWithWidgets extends DashboardConfig {

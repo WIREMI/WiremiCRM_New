@@ -1,5 +1,3 @@
-import { prisma, redis } from '../../../config/database';
-import { MetricDefinition, MetricCache } from '@prisma/client';
 
 export interface MetricValue {
   value: number;

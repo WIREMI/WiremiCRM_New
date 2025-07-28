@@ -1,4 +1,3 @@
-import { prisma } from '../../../config/database';
 import { TransactionService } from './TransactionService';
 import path from 'path';
 import fs from 'fs/promises';
