@@ -5,11 +5,11 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    exclude: ['lucide-react'],
+    exclude: ['lucide-react', '@prisma/client'],
   },
   build: {
     rollupOptions: {
-      external: ['@prisma/client']
+      external: ['@prisma/client', '.prisma/client/index-browser']
     }
   }
 });
