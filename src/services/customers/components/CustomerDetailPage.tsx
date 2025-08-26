@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Building, Phone, Mail, MapPin, Shield, AlertTriangle, CheckCircle, XCircle, Edit, Bell, CreditCard } from 'lucide-react';
+import { ArrowLeft, User, Building, Phone, Mail, MapPin, Shield, AlertTriangle, CheckCircle, XCircle, Edit, Bell, CreditCard, Calendar } from 'lucide-react';
 import { PersonalAccount, BusinessAccount, AccountStatus, BusinessAccountStatus, CustomerTier, KYCStatus } from '../../../types';
 import PageHeader from '../../../components/Common/PageHeader';
 import EditCustomerModal from './modals/EditCustomerModal';
