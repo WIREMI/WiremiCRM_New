@@ -353,7 +353,7 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
             </div>}
             {customer.accountStatus && <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getStatusBadge(customer.accountStatus)}`}>
               {customer.accountStatus}
-            </div>}
+            </span>}
             <>
               {customer.accountStatus && <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getStatusBadge(customer.accountStatus)}`}>
                 {customer.accountStatus}
