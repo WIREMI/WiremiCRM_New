@@ -195,6 +195,12 @@ const PersonalOverviewTab: React.FC<PersonalOverviewTabProps> = ({ customer }) =
                 {formatDateTime(customer.lastLogin.timestamp)}
               </span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600 dark:text-dark-400">Device ID:</span>
+              <span className="font-medium text-gray-900 dark:text-dark-100">
+                {customer.lastLogin.deviceInfo}
+              </span>
+            </div>
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CreditCard, ArrowUpRight, ArrowDownLeft, ExternalLink } from 'lucide-react';
 import { Transaction, TransactionType, TransactionStatus } from '../../../../types';
+import TransactionDetailModal from '../../../transactions/components/TransactionDetailModal';
 
 interface TransactionsTabProps {
   customerId: string;
@@ -14,6 +15,8 @@ const TransactionsTab: React.FC<TransactionsTabProps> = ({ customerId }) => {
     status: '', // Changed from status to status
     dateRange: '30d'
   });
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   useEffect(() => {
     loadTransactions();
@@ -92,6 +95,11 @@ const TransactionsTab: React.FC<TransactionsTabProps> = ({ customerId }) => {
   const handleViewInExplorer = () => {
     // TODO: Navigate to Transaction Explorer with customer filter
     console.log('Navigate to Transaction Explorer for customer:', customerId);
+  };
+
+  const handleViewTransactionDetails = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsDetailModalOpen(true);
   };
 
   return (
@@ -244,7 +252,7 @@ const TransactionsTab: React.FC<TransactionsTabProps> = ({ customerId }) => {
                       {formatDate(transaction.timestamp)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
+                      <button onClick={() => handleViewTransactionDetails(transaction)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                         View Details
                       </button>
                     </td>
@@ -262,6 +270,15 @@ const TransactionsTab: React.FC<TransactionsTabProps> = ({ customerId }) => {
             This customer hasn't made any transactions yet or none match the current filters.
           </p>
         </div>
+      )}
+
+      {selectedTransaction && (
+        <TransactionDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          transaction={selectedTransaction as any} // Cast to any as Transaction type is slightly different
+          onTransactionUpdated={loadTransactions}
+        />
       )}
     </div>
   );
