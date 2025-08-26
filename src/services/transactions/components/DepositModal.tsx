@@ -35,10 +35,8 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onSuccess 
         metadata: metadata ? JSON.parse(metadata) : undefined,
       };
 
-      const endpoint = '/api/v1/transactions/deposit';
-
-      // TODO: Replace with actual API call
-      console.log(`Would call ${endpoint} with payload:`, payload);
+      // Simulate deposit creation without backend
+      console.log('Creating deposit:', payload);
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));

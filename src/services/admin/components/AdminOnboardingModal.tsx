@@ -131,27 +131,17 @@ const AdminOnboardingModal: React.FC<AdminOnboardingModalProps> = ({
     setError('');
 
     try {
-      const response = await fetch('/api/auth/onboard-admin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          email: formData.email,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          password: formData.password,
-          role: formData.role,
-          sendWelcomeEmail: formData.sendWelcomeEmail
-        }),
+      // Simulate admin creation without backend
+      console.log('Creating admin user:', {
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        role: formData.role,
+        sendWelcomeEmail: formData.sendWelcomeEmail
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create admin user');
-      }
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Success
       onSuccess();

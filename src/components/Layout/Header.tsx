@@ -74,17 +74,8 @@ const Header: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      // Redirect to login regardless of API response
-      navigate('/auth/login');
-    }
+    // Simply redirect to dashboard since there's no authentication
+    navigate('/dashboard');
   };
   return (
     <>

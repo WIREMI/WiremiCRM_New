@@ -60,17 +60,12 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
   const handleDownloadReceipt = async (transactionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      const response = await fetch(`/api/v1/transactions/${transactionId}/receipt`, {
-        method: 'GET',
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate receipt');
-      }
-
-      // Get the PDF blob
-      const blob = await response.blob();
+      // Simulate receipt generation without backend
+      console.log('Generating receipt for transaction:', transactionId);
+      
+      // Create a mock PDF blob
+      const mockPdfContent = `Mock PDF Receipt for Transaction ${transactionId}`;
+      const blob = new Blob([mockPdfContent], { type: 'application/pdf' });
       
       // Create download link
       const url = window.URL.createObjectURL(blob);

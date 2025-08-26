@@ -2,8 +2,6 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import DashboardPage from '../services/dashboard/components/DashboardPage';
-import LoginPage from '../services/auth/components/LoginPage';
-import TwoFactorPage from '../services/auth/components/TwoFactorPage';
 import CustomerManagement from '../services/customers/CustomerManagement';
 import TransactionExplorer from '../services/transactions/TransactionExplorer';
 import RoleManagement from '../services/roles/RoleManagement';
@@ -20,11 +18,7 @@ const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Auth Routes */}
-        <Route path="/auth/login" element={<LoginPage />} />
-        <Route path="/auth/2fa" element={<TwoFactorPage />} />
-        
-        {/* Protected Routes */}
+        {/* Main Routes */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
@@ -49,8 +43,8 @@ const AppRouter: React.FC = () => {
           <Route path="advertising" element={<div className="p-6">Advertising & Notifications - Coming Soon</div>} />
         </Route>
         
-        {/* Redirect to login for any unmatched routes */}
-        <Route path="*" element={<Navigate to="/auth/login" replace />} />
+        {/* Redirect to dashboard for any unmatched routes */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );
