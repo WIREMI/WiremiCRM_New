@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, User, Building, Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { X, User, Building, Mail, Phone, MapPin, Calendar, Lock, Repeat, Users } from 'lucide-react';
 import { PersonalAccount, BusinessAccount, AccountStatus, BusinessAccountStatus, CustomerTier } from '../../../../types';
 
 interface EditCustomerModalProps {
@@ -16,7 +16,7 @@ const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
   onClose
 }) => {
   const [formData, setFormData] = useState<any>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // State for loading during save
   const [activeSection, setActiveSection] = useState('basic');
 
   useEffect(() => {
@@ -34,7 +34,10 @@ const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
         postalCode: personalCustomer.postalCode,
         dateOfBirth: personalCustomer.dateOfBirth,
         accountStatus: personalCustomer.accountStatus,
-        userTier: personalCustomer.userTier
+        userTier: personalCustomer.userTier,
+        accountPin: personalCustomer.accountPin,
+        transactionPin: personalCustomer.transactionPin,
+        transactionPinLastChanged: personalCustomer.transactionPinLastChanged,
       });
     } else {
       const businessCustomer = customer as BusinessAccount;
@@ -50,7 +53,10 @@ const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
         city: businessCustomer.city,
         postalCode: businessCustomer.postalCode,
         accountStatus: businessCustomer.accountStatus,
-        userTier: businessCustomer.userTier
+        userTier: businessCustomer.userTier,
+        accountPin: businessCustomer.accountPin,
+        transactionPin: businessCustomer.transactionPin,
+        transactionPinLastChanged: businessCustomer.transactionPinLastChanged,
       });
     }
   }, [customer, customerType]);
@@ -77,7 +83,7 @@ const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
   const sections = [
     { id: 'basic', label: 'Basic Info', icon: User },
     { id: 'contact', label: 'Contact', icon: Mail },
-    { id: 'location', label: 'Location', icon: MapPin },
+    { id: 'location', label: 'Location', icon: MapPin }, // Changed icon from Calendar to MapPin
     { id: 'account', label: 'Account', icon: Building }
   ];
 
@@ -238,6 +244,50 @@ const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                 <option value={CustomerTier.GOLD}>Gold</option>
                 <option value={CustomerTier.PLATINUM}>Platinum</option>
               </select>
+            </div>
+          </div>
+          <h4 className="font-medium text-gray-900 dark:text-dark-100 mt-6">Security Information</h4>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-dark-300 mb-2">
+                Account PIN
+              </label>
+              <div className="relative">
+                <input
+                  type="password" // Always masked
+                  value={formData.accountPin || ''}
+                  onChange={(e) => handleInputChange('accountPin', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100"
+                  readOnly // PINs are usually not editable directly here
+                />
+                <Lock size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-dark-300 mb-2">
+                Transaction PIN
+              </label>
+              <div className="relative">
+                <input
+                  type="password" // Always masked
+                  value={formData.transactionPin || ''}
+                  onChange={(e) => handleInputChange('transactionPin', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100"
+                  readOnly // PINs are usually not editable directly here
+                />
+                <Lock size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-dark-300 mb-2">
+                Transaction PIN Last Changed
+              </label>
+              <input
+                type="datetime-local"
+                value={formData.transactionPinLastChanged ? new Date(formData.transactionPinLastChanged).toISOString().slice(0, 16) : ''}
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg bg-gray-100 dark:bg-dark-700 text-gray-900 dark:text-dark-100"
+              />
             </div>
           </div>
         </div>
@@ -416,6 +466,50 @@ const EditCustomerModal: React.FC<EditCustomerModalProps> = ({
                 <option value={CustomerTier.GOLD}>Gold</option>
                 <option value={CustomerTier.PLATINUM}>Platinum</option>
               </select>
+            </div>
+          </div>
+          <h4 className="font-medium text-gray-900 dark:text-dark-100 mt-6">Security Information</h4>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-dark-300 mb-2">
+                Account PIN
+              </label>
+              <div className="relative">
+                <input
+                  type="password" // Always masked
+                  value={formData.accountPin || ''}
+                  onChange={(e) => handleInputChange('accountPin', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100"
+                  readOnly
+                />
+                <Lock size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-dark-300 mb-2">
+                Transaction PIN
+              </label>
+              <div className="relative">
+                <input
+                  type="password" // Always masked
+                  value={formData.transactionPin || ''}
+                  onChange={(e) => handleInputChange('transactionPin', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100"
+                  readOnly
+                />
+                <Lock size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-dark-300 mb-2">
+                Transaction PIN Last Changed
+              </label>
+              <input
+                type="datetime-local"
+                value={formData.transactionPinLastChanged ? new Date(formData.transactionPinLastChanged).toISOString().slice(0, 16) : ''}
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg bg-gray-100 dark:bg-dark-700 text-gray-900 dark:text-dark-100"
+              />
             </div>
           </div>
         </div>

@@ -13,6 +13,8 @@ import VirtualCards from '../services/virtual-cards/VirtualCards';
 import MessagingCenter from '../services/messaging/MessagingCenter';
 import SupportTicketing from '../services/support/SupportTicketing';
 import SuperAdminPage from '../services/admin/SuperAdminPage';
+import CustomerDetailPage from '../services/customers/components/CustomerDetailPage';
+import LeadDetailPage from '../services/customers/components/LeadDetailPage';
 
 const AppRouter: React.FC = () => {
   return (
@@ -21,7 +23,9 @@ const AppRouter: React.FC = () => {
         {/* Main Routes */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
-          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="dashboard" element={<DashboardPage />} /> {/* Changed to DashboardPage */}
+          <Route path="customers/:id" element={<CustomerDetailPage />} />
+          <Route path="leads/:id" element={<LeadDetailPage />} />
           <Route path="customers" element={<CustomerManagement />} />
           <Route path="transactions" element={<TransactionExplorer />} />
           <Route path="roles" element={<RoleManagement />} />

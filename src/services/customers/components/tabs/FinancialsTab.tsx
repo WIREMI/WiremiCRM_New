@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wallet, DollarSign, PiggyBank, TrendingUp, CreditCard, Star, Eye, EyeOff } from 'lucide-react';
+import { Wallet, DollarSign, PiggyBank, TrendingUp, CreditCard, Star, Eye, EyeOff, Lock, Repeat, Users } from 'lucide-react';
 import { PersonalAccount, BusinessAccount, Wallet as WalletType } from '../../../../types';
 
 interface FinancialsTabProps {
@@ -11,6 +11,7 @@ const FinancialsTab: React.FC<FinancialsTabProps> = ({ customer, customerType })
   const [showBalances, setShowBalances] = useState(true);
 
   const formatCurrency = (amount: number, currency: string = 'USD') => {
+    if (amount === undefined || amount === null) return 'N/A';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency,
@@ -50,18 +51,18 @@ const FinancialsTab: React.FC<FinancialsTabProps> = ({ customer, customerType })
   };
 
   const getTotalBalance = () => {
-    return customer.wallets.reduce((total, wallet) => {
+    return (customer.wallets || []).reduce((total, wallet) => {
       // Convert all to base currency for total (simplified calculation)
       return total + wallet.balance;
     }, 0);
   };
 
   const getBaseCurrencyWallet = () => {
-    return customer.wallets.find(wallet => wallet.isBaseCurrency);
+    return (customer.wallets || []).find(wallet => wallet.isBaseCurrency);
   };
 
   const getNonBaseCurrencyWallets = () => {
-    return customer.wallets.filter(wallet => !wallet.isBaseCurrency);
+    return (customer.wallets || []).filter(wallet => !wallet.isBaseCurrency);
   };
 
   const baseCurrencyWallet = getBaseCurrencyWallet();
@@ -154,7 +155,7 @@ const FinancialsTab: React.FC<FinancialsTabProps> = ({ customer, customerType })
           Credit Score
         </h4>
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-6">
+          <div className={`flex items-center justify-center w-24 h-24 rounded-full ${getCreditScoreBackground(customer.creditScore || 0)}`}>
             <div className={`flex items-center justify-center w-24 h-24 rounded-full ${getCreditScoreBackground(customer.creditScore)}`}>
               <span className={`text-3xl font-bold ${getCreditScoreColor(customer.creditScore)}`}>
                 {customer.creditScore}
@@ -169,7 +170,7 @@ const FinancialsTab: React.FC<FinancialsTabProps> = ({ customer, customerType })
               </div>
               <div className="text-xs text-gray-500 dark:text-dark-500 mt-1">
                 Last updated: {formatDate(new Date().toISOString())}
-              </div>
+              Last updated: {formatDate(customer.updatedAt || new Date().toISOString())}
             </div>
           </div>
           <div className="text-right">
@@ -186,7 +187,7 @@ const FinancialsTab: React.FC<FinancialsTabProps> = ({ customer, customerType })
       </div>
 
       {/* Base Currency Wallet */}
-      {baseCurrencyWallet && (
+      {baseCurrencyWallet && customer.wallets && customer.wallets.length > 0 && (
         <div className="bg-white dark:bg-dark-800 rounded-lg border border-gray-200 dark:border-dark-700 p-6">
           <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
             <Wallet className="mr-2 text-blue-500" size={20} />
@@ -224,7 +225,7 @@ const FinancialsTab: React.FC<FinancialsTabProps> = ({ customer, customerType })
           Multi-Currency Wallets
         </h4>
         
-        {getNonBaseCurrencyWallets().length > 0 ? (
+        {getNonBaseCurrencyWallets().length > 0 && customer.wallets && customer.wallets.length > 1 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {getNonBaseCurrencyWallets().map((wallet) => (
               <div key={wallet.id} className="border border-gray-200 dark:border-dark-600 rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -263,6 +264,66 @@ const FinancialsTab: React.FC<FinancialsTabProps> = ({ customer, customerType })
           <div className="text-center py-8">
             <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-500 dark:text-dark-400">No additional currency wallets</p>
+          </div>
+        )}
+      </div>
+
+      {/* Savings Overview */}
+      <div className="bg-white dark:bg-dark-800 rounded-lg border border-gray-200 dark:border-dark-700 p-6">
+        <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
+          <PiggyBank className="mr-2 text-orange-500" size={20} />
+          Savings Overview
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-4">
+            <div className="flex items-center space-x-3">
+              <DollarSign className="w-5 h-5 text-orange-500" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-dark-400">Total Savings Balance</p>
+                <p className="font-semibold text-gray-900 dark:text-dark-100">
+                  {showBalances ? formatCurrency(customer.savingsBalance, baseCurrencyWallet?.currency) : '••••••'}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-4">
+            <div className="flex items-center space-x-3">
+              <Lock className="w-5 h-5 text-red-500" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-dark-400">Blocked Savings</p>
+                <p className="font-semibold text-gray-900 dark:text-dark-100">
+                  {showBalances ? formatCurrency(customer.savingsBalance * 0.3, baseCurrencyWallet?.currency) : '••••••'} {/* Mock data */}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-4">
+            <div className="flex items-center space-x-3">
+              <Repeat className="w-5 h-5 text-blue-500" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-dark-400">Recurrent Savings</p>
+                <p className="font-semibold text-gray-900 dark:text-dark-100">
+                  {showBalances ? formatCurrency(customer.savingsBalance * 0.5, baseCurrencyWallet?.currency) : '••••••'} {/* Mock data */}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-4">
+            <div className="flex items-center space-x-3">
+              <Users className="w-5 h-5 text-purple-500" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-dark-400">Group Savings</p>
+                <p className="font-semibold text-gray-900 dark:text-dark-100">
+                  {showBalances ? formatCurrency(customer.savingsBalance * 0.2, baseCurrencyWallet?.currency) : '••••••'} {/* Mock data */}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {customer.savingsBalance === 0 && (
+          <div className="text-center py-8">
+            <PiggyBank className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-500 dark:text-dark-400">No savings instances found for this customer.</p>
           </div>
         )}
       </div>

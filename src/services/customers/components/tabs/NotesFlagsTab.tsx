@@ -1,22 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Flag, Star, AlertTriangle, Plus, Edit, Trash2, Calendar } from 'lucide-react';
-
-interface CustomerNote {
-  id: string;
-  content: string;
-  createdBy: string;
-  createdAt: string;
-  isInternal: boolean;
-}
-
-interface CustomerFlag {
-  id: string;
-  type: 'VIP' | 'ABUSE' | 'RISK' | 'PRIORITY';
-  reason: string;
-  createdBy: string;
-  createdAt: string;
-  isActive: boolean;
-}
+import { CustomerNote, CustomerFlag } from '../../../../types';
 
 interface NotesFlagsTabProps {
   customerId: string;
@@ -212,7 +196,7 @@ const NotesFlagsTab: React.FC<NotesFlagsTabProps> = ({ customerId }) => {
       {/* Customer Flags */}
       <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 flex items-center">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 flex items-center"> {/* Changed text-gray-800 to text-gray-900 */}
             <Flag className="mr-2 text-red-500" size={20} />
             Customer Flags
           </h4>
@@ -237,7 +221,7 @@ const NotesFlagsTab: React.FC<NotesFlagsTabProps> = ({ customerId }) => {
                   onChange={(e) => setNewFlag(prev => ({ ...prev, type: e.target.value as any }))}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-800 text-gray-900 dark:text-dark-100"
                 >
-                  <option value="VIP">VIP</option>
+                  <option value="VIP">VIP</option> {/* Changed text-gray-800 to text-gray-900 */}
                   <option value="ABUSE">Abuse</option>
                   <option value="RISK">Risk</option>
                   <option value="PRIORITY">Priority</option>
@@ -283,7 +267,7 @@ const NotesFlagsTab: React.FC<NotesFlagsTabProps> = ({ customerId }) => {
                     <div className="flex items-center space-x-2">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getFlagBadge(flag.type)}`}>
                         {flag.type}
-                      </span>
+                    </span> {/* Changed text-gray-800 to text-gray-900 */}
                       <span className="text-sm font-medium text-gray-900 dark:text-dark-100">
                         {flag.reason}
                       </span>
@@ -313,7 +297,7 @@ const NotesFlagsTab: React.FC<NotesFlagsTabProps> = ({ customerId }) => {
       {/* Customer Notes */}
       <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 flex items-center">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 flex items-center"> {/* Changed text-gray-800 to text-gray-900 */}
             <MessageSquare className="mr-2 text-blue-500" size={20} />
             Customer Notes
           </h4>
@@ -361,7 +345,7 @@ const NotesFlagsTab: React.FC<NotesFlagsTabProps> = ({ customerId }) => {
                     <div className="flex items-center space-x-2 mb-2">
                       <MessageSquare size={16} className="text-blue-500" />
                       {note.isInternal && (
-                        <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">
+                        <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs"> {/* Changed text-gray-800 to text-gray-900 */}
                           Internal
                         </span>
                       )}

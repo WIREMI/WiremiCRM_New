@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Building, Phone, Mail, MapPin, Calendar, Shield, AlertTriangle, CheckCircle, XCircle, Edit, Bell, CreditCard } from 'lucide-react';
+import { ArrowLeft, User, Building, Phone, Mail, MapPin, Shield, AlertTriangle, CheckCircle, XCircle, Edit, Bell, CreditCard } from 'lucide-react';
 import { PersonalAccount, BusinessAccount, AccountStatus, BusinessAccountStatus, CustomerTier, KYCStatus } from '../../../types';
 import PageHeader from '../../../components/Common/PageHeader';
 import EditCustomerModal from './modals/EditCustomerModal';
-
+import KYCDocumentViewerModal from './modals/KYCDocumentViewerModal';
 // Tab components
 import PersonalOverviewTab from './tabs/PersonalOverviewTab';
 import BusinessOverviewTab from './tabs/BusinessOverviewTab';
@@ -25,7 +25,7 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
   const [customerType, setCustomerType] = useState<CustomerType>('personal');
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false); // State for EditCustomerModal
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
       // Mock data for demonstration
       const mockPersonalAccount: PersonalAccount = {
         id: customerId,
-        wiremiId: 'WRM001234',
+        wiremiId: `WRM${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}`,
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
@@ -132,7 +132,7 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
       };
 
       setCustomer(mockPersonalAccount);
-      setCustomerType('personal');
+      setCustomerType('personal'); // Default to personal for mock
     } catch (error) {
       console.error('Failed to load customer details:', error);
     } finally {
@@ -146,6 +146,10 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
 
   const handleSendNotification = () => {
     setShowNotificationModal(true);
+  };
+
+  const handleOpenKYCReview = () => {
+    setActiveTab('kyc');
   };
 
   const handleSaveCustomer = (updatedData: any) => {
@@ -231,7 +235,7 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
   const personalCustomer = customer as PersonalAccount;
   const businessCustomer = customer as BusinessAccount;
 
-  // Dynamic tab configuration based on customer type
+  // Dynamic tab configuration based on customer type (simplified for now)
   const tabs = [
     { 
       id: 'overview', 
@@ -324,7 +328,7 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
                 <div className="flex items-center">
                   <Mail size={16} className="mr-1" />
                   {isPersonalAccount ? personalCustomer.email : businessCustomer.primaryContact.email}
-                  {isPersonalAccount && getVerificationIcon(personalCustomer.emailVerified)}
+                  {isPersonalAccount && personalCustomer.emailVerified !== undefined && getVerificationIcon(personalCustomer.emailVerified)}
                 </div>
                 <div className="flex items-center">
                   <Phone size={16} className="mr-1" />
@@ -341,13 +345,13 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
 
           {/* Status Badges */}
           <div className="flex flex-col items-end space-y-2">
-            <div className="flex items-center space-x-2">
+            {customer.kycStatus && <div className="flex items-center space-x-2">
               {getKycStatusIcon(customer.kycStatus)}
               <span className="text-sm font-medium">
                 KYC {customer.kycStatus}
               </span>
-            </div>
-            <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getStatusBadge(customer.accountStatus)}`}>
+            </div>}
+            {customer.accountStatus && <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getStatusBadge(customer.accountStatus)}`}>
               {customer.accountStatus}
             </span>
             <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getTierBadge(customer.userTier)}`}>
@@ -394,7 +398,7 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
             <FinancialsTab customer={customer} customerType={customerType} />
           )}
           {activeTab === 'kyc' && (
-            <KycComplianceTab customer={customer} customerType={customerType} />
+            <KycComplianceTab customer={customer} customerType={customerType} onOpenKYCReview={handleOpenKYCReview} />
           )}
           {activeTab === 'transactions' && (
             <TransactionsTab customerId={customer.id} />

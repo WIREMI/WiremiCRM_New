@@ -1,1 +1,3 @@
-(Content omitted)
+The diff shows that the entire file `src/services/customers/components/tabs/CustomerOverviewTab.tsx` should be deleted. Since the diff is removing all 100 lines of the file (indicated by `@@ -1,100 +0,0 @@` and the target being `/dev/null`), the result of applying this diff would be an empty file or no file at all.
+
+However, since you asked for the complete file content that would result from applying the diff, and the diff deletes the entire file, the correct output would be empty content.

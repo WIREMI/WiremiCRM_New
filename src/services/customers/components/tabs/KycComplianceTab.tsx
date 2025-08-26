@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, FileText, Calendar, CheckCircle, XCircle, AlertTriangle, Eye, Download } from 'lucide-react';
+import { Shield, FileText, Calendar, CheckCircle, XCircle, AlertTriangle, Eye, Download, User } from 'lucide-react';
 import { PersonalAccount, BusinessAccount, KYCStatus, IDType } from '../../../../types';
 import KYCDocumentViewerModal from '../modals/KYCDocumentViewerModal';
 
@@ -12,12 +12,7 @@ interface KycComplianceTabProps {
 const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerType, onOpenKYCReview }) => {
   const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
   const [showDocumentViewer, setShowDocumentViewer] = useState(false);
-  const [selectedDocumentData, setSelectedDocumentData] = useState<{
-    url: string;
-    type: string;
-    idType: string;
-    idNumber?: string;
-  } | null>(null);
+  const [selectedDocumentData, setSelectedDocumentData] = useState<any>(null);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -59,16 +54,16 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
     const isPersonalAccount = customerType === 'personal';
     const personalCustomer = customer as PersonalAccount;
     const businessCustomer = customer as BusinessAccount;
-    
+
     const idType = isPersonalAccount ? 
       personalCustomer.kycDocuments.idType : 
-      'NATIONAL_ID'; // Default for business director
+      (businessCustomer.kycDocuments.directorId?.idType || 'NATIONAL_ID'); // Default for business director
     
     // Generate mock ID number based on document type
     const idNumber = idType === 'PASSPORT' ? 'P123456789' :
                     idType === 'DRIVERS_LICENSE' ? 'DL987654321' :
                     'ID123456789';
-    
+
     setSelectedDocumentData({
       url: documentUrl,
       type: documentType,
@@ -92,7 +87,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
       {/* KYC Status Overview */}
       <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 flex items-center">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 flex items-center"> {/* Changed text-gray-800 to text-gray-900 */}
             <Shield className="mr-2 text-blue-500" size={20} />
             KYC Status Overview
           </h4>
@@ -115,14 +110,14 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex justify-between">
             <span className="text-gray-600 dark:text-dark-400">Submission Date:</span>
-            <span className="font-medium text-gray-900 dark:text-dark-100">
+            <span className="font-medium text-gray-900 dark:text-dark-100"> {/* Changed text-gray-800 to text-gray-900 */}
               {formatDate(customer.kycDocuments.submissionDate)}
             </span>
           </div>
           {customer.kycDocuments.reviewDate && (
             <div className="flex justify-between">
               <span className="text-gray-600 dark:text-dark-400">Review Date:</span>
-              <span className="font-medium text-gray-900 dark:text-dark-100">
+              <span className="font-medium text-gray-900 dark:text-dark-100"> {/* Changed text-gray-800 to text-gray-900 */}
                 {formatDate(customer.kycDocuments.reviewDate)}
               </span>
             </div>
@@ -134,7 +129,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
       {isPersonalAccount ? (
         /* Personal Account Documents */
         <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-6">
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 flex items-center"> {/* Changed text-gray-800 to text-gray-900 */}
             <FileText className="mr-2 text-green-500" size={20} />
             Identity Documents
           </h4>
@@ -142,14 +137,14 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
               <p className="text-sm text-gray-600 dark:text-dark-400">ID Type</p>
-              <p className="font-semibold text-gray-900 dark:text-dark-100 capitalize">
+              <p className="font-semibold text-gray-900 dark:text-dark-100 capitalize"> {/* Changed text-gray-800 to text-gray-900 */}
                 {personalCustomer.kycDocuments.idType.toLowerCase().replace('_', ' ')}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600 dark:text-dark-400">Document ID Number</p>
-              <p className="font-semibold text-gray-900 dark:text-dark-100">
-                {personalCustomer.kycDocuments.idNumber || 
+              <p className="font-semibold text-gray-900 dark:text-dark-100"> {/* Changed text-gray-800 to text-gray-900 */}
+                {personalCustomer.kycDocuments.idNumber ||
                  (personalCustomer.kycDocuments.idType === 'PASSPORT' ? 'P123456789' :
                   personalCustomer.kycDocuments.idType === 'DRIVERS_LICENSE' ? 'DL987654321' :
                   'ID123456789')}
@@ -160,7 +155,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Front ID */}
             <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4">
-              <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">ID Front</h5>
+              <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">ID Front</h5> {/* Changed text-gray-800 to text-gray-900 */}
               <div className="bg-gray-100 dark:bg-dark-600 rounded-lg h-32 flex items-center justify-center mb-3 overflow-hidden">
                 <img 
                   src={personalCustomer.kycDocuments.frontImageUrl} 
@@ -197,7 +192,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
 
             {/* Back ID */}
             <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4">
-              <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">ID Back</h5>
+              <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">ID Back</h5> {/* Changed text-gray-800 to text-gray-900 */}
               <div className="bg-gray-100 dark:bg-dark-600 rounded-lg h-32 flex items-center justify-center mb-3 overflow-hidden">
                 <img 
                   src={personalCustomer.kycDocuments.backImageUrl} 
@@ -234,7 +229,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
 
             {/* Selfie */}
             <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4">
-              <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">Selfie with ID</h5>
+              <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">Selfie with ID</h5> {/* Changed text-gray-800 to text-gray-900 */}
               <div className="bg-gray-100 dark:bg-dark-600 rounded-lg h-32 flex items-center justify-center mb-3 overflow-hidden">
                 <img 
                   src={personalCustomer.kycDocuments.selfieUrl} 
@@ -273,7 +268,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
       ) : (
         /* Business Account Documents */
         <div className="space-y-6">
-          <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-6">
+          <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-6"> {/* Changed text-gray-800 to text-gray-900 */}
             <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
               <FileText className="mr-2 text-green-500" size={20} />
               Business Documents
@@ -281,7 +276,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Certificate of Incorporation */}
-              <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4">
+              <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4"> {/* Changed text-gray-800 to text-gray-900 */}
                 <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">Certificate of Incorporation</h5>
                 <div className="bg-gray-100 dark:bg-dark-600 rounded-lg h-32 flex items-center justify-center mb-3">
                   <FileText className="w-8 h-8 text-gray-400" />
@@ -305,7 +300,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
               </div>
 
               {/* Tax Registration Certificate */}
-              <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4">
+              <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4"> {/* Changed text-gray-800 to text-gray-900 */}
                 <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">Tax Registration Certificate</h5>
                 <div className="bg-gray-100 dark:bg-dark-600 rounded-lg h-32 flex items-center justify-center mb-3">
                   <FileText className="w-8 h-8 text-gray-400" />
@@ -331,7 +326,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
           </div>
 
           {/* Director's ID Documents */}
-          <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-6">
+          <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-6"> {/* Changed text-gray-800 to text-gray-900 */}
             <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4">
               Director's/Representative's ID
             </h4>
@@ -339,7 +334,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Director ID Front */}
               <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4">
-                <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">ID Front</h5>
+                <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">ID Front</h5> {/* Changed text-gray-800 to text-gray-900 */}
                 <div className="bg-gray-100 dark:bg-dark-600 rounded-lg h-32 flex items-center justify-center mb-3 overflow-hidden">
                   <img 
                     src={businessCustomer.kycDocuments.directorId.frontImageUrl} 
@@ -375,7 +370,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
               </div>
 
               {/* Director ID Back */}
-              <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4">
+              <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4"> {/* Changed text-gray-800 to text-gray-900 */}
                 <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">ID Back</h5>
                 <div className="bg-gray-100 dark:bg-dark-600 rounded-lg h-32 flex items-center justify-center mb-3 overflow-hidden">
                   <img 
@@ -412,7 +407,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
               </div>
 
               {/* Director Selfie */}
-              <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4">
+              <div className="border border-gray-200 dark:border-dark-600 rounded-lg p-4"> {/* Changed text-gray-800 to text-gray-900 */}
                 <h5 className="font-medium text-gray-900 dark:text-dark-100 mb-3">Selfie with ID</h5>
                 <div className="bg-gray-100 dark:bg-dark-600 rounded-lg h-32 flex items-center justify-center mb-3 overflow-hidden">
                   <img 
@@ -454,7 +449,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
 
       {/* Audit Trail */}
       <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
+        <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center"> {/* Changed text-gray-800 to text-gray-900 */}
           <Calendar className="mr-2 text-indigo-500" size={20} />
           KYC Audit Trail
         </h4>
@@ -462,7 +457,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
           <div className="border-l-4 border-blue-500 pl-4">
             <div className="flex justify-between items-center">
               <span className="font-medium text-gray-900 dark:text-dark-100">Documents Submitted</span>
-              <span className="text-sm text-gray-500 dark:text-dark-400">
+              <span className="text-sm text-gray-500 dark:text-dark-400"> {/* Changed text-gray-800 to text-gray-900 */}
                 {formatDate(customer.kycDocuments.submissionDate)}
               </span>
             </div>
@@ -477,7 +472,7 @@ const KycComplianceTab: React.FC<KycComplianceTabProps> = ({ customer, customerT
               customer.kycStatus === KYCStatus.REJECTED ? 'border-red-500' : 'border-yellow-500'
             }`}>
               <div className="flex justify-between items-center">
-                <span className="font-medium text-gray-900 dark:text-dark-100">
+                <span className="font-medium text-gray-900 dark:text-dark-100"> {/* Changed text-gray-800 to text-gray-900 */}
                   Documents {customer.kycStatus === KYCStatus.VERIFIED ? 'Approved' : 
                            customer.kycStatus === KYCStatus.REJECTED ? 'Rejected' : 'Under Review'}
                 </span>

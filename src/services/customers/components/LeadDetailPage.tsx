@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Mail, Phone, Calendar, ExternalLink, UserPlus } from 'lucide-react';
+import { ArrowLeft, User, Mail, Phone, Calendar, ExternalLink, UserPlus, MessageSquare } from 'lucide-react';
 import { Lead, LeadStatus } from '../../../types';
 import PageHeader from '../../../components/Common/PageHeader';
 
@@ -33,7 +33,8 @@ const LeadDetailPage: React.FC = () => {
         },
         leadSource: 'Website Registration',
         leadStatus: LeadStatus.NEW,
-        createdAt: '2024-01-20T10:30:00Z',
+        createdAt: '2024-01-20T10:30:00Z', // Changed to ISO string
+        updatedAt: '2024-01-21T14:15:00Z', // Added updatedAt
         lastContactedAt: '2024-01-21T14:15:00Z'
       };
 
@@ -285,6 +286,38 @@ const LeadDetailPage: React.FC = () => {
               <UserPlus size={16} className="mr-2" />
               {isConverting ? 'Converting...' : 'Convert to Customer'}
             </button>
+          </div>
+        </div>
+
+        {/* Lead Activity/Conversation (Mock) */}
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6 lg:col-span-2">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
+            <MessageSquare className="mr-2 text-blue-500" size={20} />
+            Lead Activity & Notes
+          </h3>
+          <div className="space-y-4">
+            <div className="border-l-4 border-blue-500 pl-4">
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-gray-900 dark:text-dark-100">Lead Created</span>
+                <span className="text-sm text-gray-500 dark:text-dark-400">
+                  {new Date(lead.createdAt).toLocaleString()}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-dark-400">
+                Lead generated from {lead.leadSource}.
+              </p>
+            </div>
+            {lead.lastContactedAt && (
+              <div className="border-l-4 border-green-500 pl-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-gray-900 dark:text-dark-100">Last Contacted</span>
+                  <span className="text-sm text-gray-500 dark:text-dark-400">
+                    {new Date(lead.lastContactedAt).toLocaleString()}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-dark-400">Status updated to 'Contacted'.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

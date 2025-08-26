@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CreditCard, ArrowUpRight, ArrowDownLeft, Calendar, Filter, ExternalLink } from 'lucide-react';
+import { CreditCard, ArrowUpRight, ArrowDownLeft, ExternalLink } from 'lucide-react';
 import { Transaction, TransactionType, TransactionStatus } from '../../../../types';
 
 interface TransactionsTabProps {
@@ -11,7 +11,7 @@ const TransactionsTab: React.FC<TransactionsTabProps> = ({ customerId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState({
     type: '',
-    status: '',
+    status: '', // Changed from status to status
     dateRange: '30d'
   });
 

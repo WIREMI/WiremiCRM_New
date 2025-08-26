@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Search, Filter, Plus, Download, Settings, User, Building, UserPlus } from 'lucide-react';
+import { Users, Search, Filter, Plus, Download, User, Building, UserPlus } from 'lucide-react';
 import PageHeader from '../../components/Common/PageHeader';
 import StatsCard from '../../components/Common/StatsCard';
 
@@ -11,7 +11,7 @@ interface Customer {
   phone?: string;
   firstName: string;
   lastName: string;
-  accountType: 'Lead' | 'Free' | 'Premium' | 'Business';
+  accountType: 'PERSONAL' | 'BUSINESS' | 'LEAD';
   country?: string;
   region?: string;
   kycStatus: 'Pending' | 'Verified' | 'Rejected';
@@ -39,7 +39,7 @@ const CustomerManagement: React.FC = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages] = useState(5); // Mock pagination
   const [activeAccountType, setActiveAccountType] = useState<'all' | 'personal' | 'business' | 'leads'>('all');
   const [filters, setFilters] = useState<FilterState>({
     search: '',
@@ -73,8 +73,8 @@ const CustomerManagement: React.FC = () => {
         firstName: `Customer`,
         lastName: `${i + 1}`,
         accountType: ['Lead', 'Free', 'Premium', 'Business'][i % 4] as any,
-        country: ['US', 'UK', 'CA', 'AU'][i % 4],
-        region: ['North America', 'Europe', 'Asia Pacific'][i % 3],
+        country: ['United States', 'Canada', 'United Kingdom', 'Nigeria'][i % 4],
+        region: ['California', 'Ontario', 'England', 'Lagos'][i % 4],
         kycStatus: ['Pending', 'Verified', 'Rejected'][i % 3] as any,
         riskScore: Math.floor(Math.random() * 100),
         createdAt: new Date(Date.now() - i * 86400000).toISOString(),
@@ -82,8 +82,7 @@ const CustomerManagement: React.FC = () => {
         lastLoginAt: Math.random() > 0.3 ? new Date(Date.now() - Math.random() * 86400000 * 7).toISOString() : undefined,
         signupDate: new Date(Date.now() - i * 86400000).toISOString()
       }));
-      
-      // Filter customers based on active account type
+
       let filteredCustomers = mockCustomers;
       if (activeAccountType !== 'all') {
         if (activeAccountType === 'leads') {
@@ -91,12 +90,10 @@ const CustomerManagement: React.FC = () => {
         } else if (activeAccountType === 'personal') {
           filteredCustomers = mockCustomers.filter(c => c.accountType === 'Free' || c.accountType === 'Premium');
         } else if (activeAccountType === 'business') {
-          filteredCustomers = mockCustomers.filter(c => c.accountType === 'Business');
+          filteredCustomers = mockCustomers.filter(c => c.accountType === 'BUSINESS');
         }
       }
-      
       setCustomers(filteredCustomers);
-      setTotalPages(5); // Mock pagination
     } catch (error) {
       console.error('Failed to load customers:', error);
     } finally {
@@ -112,9 +109,9 @@ const CustomerManagement: React.FC = () => {
   };
 
   const getAccountTypeStats = () => {
-    const totalCustomers = 24567; // Mock total
-    const leads = Math.floor(totalCustomers * 0.15); // 15% leads
-    const personal = Math.floor(totalCustomers * 0.70); // 70% personal
+    const totalCustomers = customers.length;
+    const leads = customers.filter(c => c.accountType === 'LEAD').length;
+    const personal = customers.filter(c => c.accountType === 'PERSONAL' || c.accountType === 'Free' || c.accountType === 'Premium').length;
     const business = Math.floor(totalCustomers * 0.15); // 15% business
     
     return { totalCustomers, leads, personal, business };
@@ -150,7 +147,7 @@ const CustomerManagement: React.FC = () => {
 
   const getAccountTypeBadge = (accountType: string) => {
     const colors = {
-      Lead: 'bg-yellow-100 text-yellow-800',
+      LEAD: 'bg-yellow-100 text-yellow-800',
       Free: 'bg-gray-100 text-gray-800',
       Premium: 'bg-blue-100 text-blue-800',
       Business: 'bg-purple-100 text-purple-800'
@@ -176,9 +173,9 @@ const CustomerManagement: React.FC = () => {
 
   const handleCustomerClick = (customerId: string) => {
     const customer = customers.find(c => c.id === customerId);
-    if (customer?.accountType === 'Lead') {
+    if (customer?.accountType === 'LEAD') {
       navigate(`/leads/${customerId}`);
-    } else {
+    } else if (customer?.accountType === 'PERSONAL' || customer?.accountType === 'BUSINESS' || customer?.accountType === 'Free' || customer?.accountType === 'Premium') {
       navigate(`/customers/${customerId}`);
     }
   };
@@ -342,9 +339,9 @@ const CustomerManagement: React.FC = () => {
                 className="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100"
               >
                 <option value="">All Types</option>
-                <option value="Lead">Lead</option>
-                <option value="Free">Free</option>
-                <option value="Premium">Premium</option>
+                <option value="LEAD">Lead</option>
+                <option value="PERSONAL">Personal</option>
+                <option value="BUSINESS">Business</option>
                 <option value="Business">Business</option>
               </select>
             </div>
@@ -472,7 +469,7 @@ const CustomerManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getAccountTypeBadge(customer.accountType)}`}>
-                        {customer.accountType}
+                        {customer.accountType === 'Free' || customer.accountType === 'Premium' ? 'PERSONAL' : customer.accountType}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

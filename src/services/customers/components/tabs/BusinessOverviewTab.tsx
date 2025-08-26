@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building, MapPin, Phone, Mail, User, Shield, Calendar, Smartphone, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { Building, MapPin, Phone, Mail, User, Shield, Calendar, Smartphone, CheckCircle, XCircle, AlertTriangle, Lock } from 'lucide-react';
 import { BusinessAccount, BusinessAccountStatus, CustomerTier } from '../../../../types';
 
 interface BusinessOverviewTabProps {
@@ -15,7 +15,7 @@ const BusinessOverviewTab: React.FC<BusinessOverviewTabProps> = ({ customer }) =
     });
   };
 
-  const formatDateTime = (dateString: string) => {
+  const formatDateTime = (dateString?: string) => {
     return new Date(dateString).toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -284,14 +284,28 @@ const BusinessOverviewTab: React.FC<BusinessOverviewTabProps> = ({ customer }) =
             Security Information
           </h4>
           <div className="space-y-3">
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span className="text-gray-600 dark:text-dark-400">Account PIN:</span>
-              <span className="font-medium text-gray-900 dark:text-dark-100">{customer.accountPin}</span>
+              <div className="flex items-center">
+                <span className="font-medium text-gray-900 dark:text-dark-100">••••••••</span>
+                <Lock size={16} className="ml-2 text-gray-400" />
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 dark:text-dark-400">Transaction PIN:</span>
+              <div className="flex items-center">
+                <span className="font-medium text-gray-900 dark:text-dark-100">••••••••</span>
+                <Lock size={16} className="ml-2 text-gray-400" />
+              </div>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-dark-400">Transaction PIN:</span>
-              <span className="font-medium text-gray-900 dark:text-dark-100">{customer.transactionPin}</span>
+              <span className="text-gray-600 dark:text-dark-400">PIN Last Changed:</span>
+              <span className="font-medium text-gray-900 dark:text-dark-100">
+                {customer.transactionPinLastChanged ? formatDate(customer.transactionPinLastChanged) : 'N/A'}
+              </span>
             </div>
+
+
           </div>
         </div>
 
@@ -366,7 +380,7 @@ const BusinessOverviewTab: React.FC<BusinessOverviewTabProps> = ({ customer }) =
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600 dark:text-dark-400">Last Login:</span>
-              <span className="font-medium text-gray-900 dark:text-dark-100">
+              <span className="font-medium text-gray-900 dark:text-dark-100"> {/* Changed text-gray-800 to text-gray-900 */}
                 {formatDateTime(customer.lastLogin.timestamp)}
               </span>
             </div>

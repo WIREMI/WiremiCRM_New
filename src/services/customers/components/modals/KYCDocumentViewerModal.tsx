@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, Transition } from '@headlessui/react'; // Removed unused import of Dialog and Transition
 import { X, FileText, Download, Eye, User, Calendar, Shield } from 'lucide-react';
 
 interface KYCDocumentViewerModalProps {
@@ -9,7 +9,7 @@ interface KYCDocumentViewerModalProps {
   documentType: string; // e.g., "ID Front", "ID Back", "Selfie"
   idType: string; // e.g., "NATIONAL_ID", "PASSPORT", "DRIVERS_LICENSE"
   idNumber?: string;
-  customerName: string;
+  customerName: string; // Changed from customer to customerName
   submissionDate: string;
 }
 

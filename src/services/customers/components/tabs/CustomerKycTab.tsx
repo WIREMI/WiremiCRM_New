@@ -1,1 +1,3 @@
-(Content omitted)
+Since the diff shows that the file `src/services/customers/components/tabs/CustomerKycTab.tsx` is being deleted (moved to `/dev/null`), and all lines are being removed (indicated by the `-` prefix on all lines), the correct result of applying this diff would be an empty file or no file at all.
+
+However, since you asked for the complete file content that would result from applying the diff, and the diff removes all content, the output should be empty:

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, MapPin, Phone, Mail, User, Shield, Clock, Smartphone } from 'lucide-react';
+import { Calendar, MapPin, Phone, Mail, User, Shield, Clock, Smartphone, Lock } from 'lucide-react';
 import { PersonalAccount, AccountStatus, CustomerTier } from '../../../../types';
 
 interface PersonalOverviewTabProps {
@@ -15,7 +15,7 @@ const PersonalOverviewTab: React.FC<PersonalOverviewTabProps> = ({ customer }) =
     });
   };
 
-  const formatDateTime = (dateString: string) => {
+  const formatDateTime = (dateString?: string) => {
     return new Date(dateString).toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -150,14 +150,21 @@ const PersonalOverviewTab: React.FC<PersonalOverviewTabProps> = ({ customer }) =
             Security Information
           </h4>
           <div className="space-y-3">
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span className="text-gray-600 dark:text-dark-400">Account PIN:</span>
-              <span className="font-medium text-gray-900 dark:text-dark-100">{customer.accountPin}</span>
+              <div className="flex items-center">
+                <span className="font-medium text-gray-900 dark:text-dark-100">••••••••</span>
+                <Lock size={16} className="ml-2 text-gray-400" />
+              </div>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span className="text-gray-600 dark:text-dark-400">Transaction PIN:</span>
-              <span className="font-medium text-gray-900 dark:text-dark-100">{customer.transactionPin}</span>
+              <div className="flex items-center">
+                <span className="font-medium text-gray-900 dark:text-dark-100">••••••••</span>
+                <Lock size={16} className="ml-2 text-gray-400" />
+              </div>
             </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600 dark:text-dark-400">PIN Last Changed:</span>
               <span className="font-medium text-gray-900 dark:text-dark-100">

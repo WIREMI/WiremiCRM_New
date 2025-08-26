@@ -1,14 +1,4 @@
 // Core Types for Wiremi Fintech CRM
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: UserRole;
-  status: UserStatus;
-  createdAt: string;
-  lastLogin?: string;
-}
 
 export interface Customer {
   id: string;
@@ -18,6 +8,7 @@ export interface Customer {
   totalBalance: number;
   accountOpenDate: string;
   signupDate: string;
+  accountType: AccountType;
   phone?: string;
 }
 
@@ -118,7 +109,25 @@ export interface Lead {
   leadSource: string;
   leadStatus: LeadStatus;
   createdAt: string;
+  updatedAt: string;
   lastContactedAt?: string;
+}
+
+export interface CustomerNote {
+  id: string;
+  content: string;
+  createdBy: string;
+  createdAt: string;
+  isInternal: boolean;
+}
+
+export interface CustomerFlag {
+  id: string;
+  type: 'VIP' | 'ABUSE' | 'RISK' | 'PRIORITY';
+  reason: string;
+  createdBy: string;
+  createdAt: string;
+  isActive: boolean;
 }
 
 // Supporting interfaces
@@ -141,6 +150,7 @@ export interface BusinessAddress {
   postalCode: string;
   country: string;
 }
+
 
 export interface KYCDocuments {
   idType: IDType;
