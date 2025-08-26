@@ -161,15 +161,15 @@ const FinancialsTab: React.FC<FinancialsTabProps> = ({ customer, customerType })
                 {customer.creditScore}
               </span>
             </div>
-            <div>
-              <div className={`text-xl font-semibold ${getCreditScoreColor(customer.creditScore)}`}>
-                {getCreditScoreLabel(customer.creditScore)}
-              </div>
-              <div className="text-sm text-gray-600 dark:text-dark-400">
-                Credit Score Range: 300-850
-              </div>
-              <div className="text-xs text-gray-500 dark:text-dark-500 mt-1">
-                Last updated: {formatDate(new Date().toISOString())}
+          </div>
+          <div>
+            <div className={`text-xl font-semibold ${getCreditScoreColor(customer.creditScore)}`}>
+              {getCreditScoreLabel(customer.creditScore)}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-dark-400">
+              Credit Score Range: 300-850
+            </div>
+            <div className="text-xs text-gray-500 dark:text-dark-500 mt-1">
               Last updated: {formatDate(customer.updatedAt || new Date().toISOString())}
             </div>
           </div>

@@ -353,10 +353,15 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
             </div>}
             {customer.accountStatus && <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getStatusBadge(customer.accountStatus)}`}>
               {customer.accountStatus}
-            </span>
-            <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getTierBadge(customer.userTier)}`}>
-              {customer.userTier} Tier
-            </span>
+            </div>}
+            <>
+              {customer.accountStatus && <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getStatusBadge(customer.accountStatus)}`}>
+                {customer.accountStatus}
+              </span>}
+              <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getTierBadge(customer.userTier)}`}>
+                {customer.userTier} Tier
+              </span>
+            </>
           </div>
         </div>
       </div>
