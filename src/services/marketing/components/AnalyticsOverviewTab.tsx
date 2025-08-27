@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Users, Target, DollarSign, Eye, MessageSquare, Share2, Heart } from 'lucide-react';
+import { TrendingUp, Users, Target, DollarSign, Eye, MessageSquare, Share2, Heart, Calendar, Filter } from 'lucide-react';
 
 interface AnalyticsOverviewTabProps {
   stats: {
@@ -10,10 +10,17 @@ interface AnalyticsOverviewTabProps {
     conversionRate: number;
     aiContentGenerated: number;
     pendingApprovals: number;
+    totalCustomers: number;
+    monthlyGrowthRate: number;
+    loyaltyMembers: number;
+    rewardsDistributed: number;
   };
 }
 
 const AnalyticsOverviewTab: React.FC<AnalyticsOverviewTabProps> = ({ stats }) => {
+  const [selectedTimeRange, setSelectedTimeRange] = useState('30d');
+  const [selectedMetric, setSelectedMetric] = useState('all');
+
   // Mock data for charts
   const campaignPerformanceData = [
     { name: 'Jan', reach: 45000, engagement: 3200, conversions: 156 },
