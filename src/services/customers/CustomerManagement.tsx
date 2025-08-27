@@ -173,9 +173,9 @@ const CustomerManagement: React.FC = () => {
 
   const handleCustomerClick = (customerId: string) => {
     const customer = customers.find(c => c.id === customerId);
-    if (customer?.accountType === 'LEAD') {
+    if (customer?.accountType === 'LEAD' || customer?.accountType === 'Lead') {
       navigate(`/leads/${customerId}`);
-    } else if (customer?.accountType === 'PERSONAL' || customer?.accountType === 'BUSINESS' || customer?.accountType === 'Free' || customer?.accountType === 'Premium') {
+    } else {
       navigate(`/customers/${customerId}`);
     }
   };

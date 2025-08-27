@@ -44,26 +44,26 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
       // Mock data for demonstration
       const mockPersonalAccount: PersonalAccount = {
         id: customerId,
-        wiremiId: `WRM${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}`,
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
+        wiremiId: `WRM${customerId.replace('customer-', '').padStart(6, '0')}`,
+        firstName: ['John', 'Sarah', 'Mike', 'Lisa', 'Tom', 'Emma', 'Alex', 'Maria'][Math.floor(Math.random() * 8)],
+        lastName: ['Smith', 'Wilson', 'Johnson', 'Martinez', 'Anderson', 'Davis', 'Chen', 'Garcia'][Math.floor(Math.random() * 8)],
+        email: `customer${customerId.replace('customer-', '')}@example.com`,
         emailVerified: true,
-        phone: '+1-555-0123',
+        phone: `+1-555-${Math.floor(Math.random() * 9000) + 1000}`,
         phoneVerified: true,
-        country: 'United States',
-        region: 'California',
-        city: 'San Francisco',
-        postalCode: '94102',
-        dateOfBirth: '1990-05-15',
+        country: ['United States', 'Canada', 'United Kingdom', 'Nigeria', 'Germany'][Math.floor(Math.random() * 5)],
+        region: ['California', 'Ontario', 'England', 'Lagos', 'Bavaria'][Math.floor(Math.random() * 5)],
+        city: ['San Francisco', 'Toronto', 'London', 'Lagos', 'Munich'][Math.floor(Math.random() * 5)],
+        postalCode: String(Math.floor(Math.random() * 90000) + 10000),
+        dateOfBirth: `19${80 + Math.floor(Math.random() * 20)}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`,
         accountPin: '****', // Encrypted/masked
         transactionPin: '****', // Encrypted/masked
         transactionPinLastChanged: '2024-01-15T10:30:00Z',
-        referralCode: 'REF123456',
-        kycStatus: KYCStatus.VERIFIED,
+        referralCode: `REF${Math.floor(Math.random() * 1000000)}`,
+        kycStatus: [KYCStatus.VERIFIED, KYCStatus.PENDING, KYCStatus.REJECTED][Math.floor(Math.random() * 3)],
         kycDocuments: {
           idType: 'NATIONAL_ID' as any,
-          idNumber: 'ID123456789',
+          idNumber: `ID${Math.floor(Math.random() * 1000000000)}`,
           frontImageUrl: '/images/id-front.jpg',
           backImageUrl: '/images/id-back.jpg',
           selfieUrl: '/images/selfie.jpg',
@@ -71,29 +71,29 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
           reviewDate: '2024-01-12T14:30:00Z'
         },
         accountStatus: AccountStatus.ACTIVE,
-        userTier: CustomerTier.GOLD,
+        userTier: [CustomerTier.BRONZE, CustomerTier.SILVER, CustomerTier.GOLD, CustomerTier.PLATINUM][Math.floor(Math.random() * 4)],
         accountCreationDate: '2024-01-01T00:00:00Z',
         lastLogin: {
           timestamp: '2024-01-20T15:45:00Z',
-          deviceInfo: 'iPhone 13 Pro',
-          ipAddress: '192.168.1.100',
-          userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)'
+          deviceInfo: ['iPhone 13 Pro', 'Samsung Galaxy S21', 'Google Pixel 6', 'OnePlus 9'][Math.floor(Math.random() * 4)],
+          ipAddress: `192.168.1.${Math.floor(Math.random() * 255)}`,
+          userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15'
         },
-        riskScore: 25,
-        creditScore: 750,
+        riskScore: Math.floor(Math.random() * 100),
+        creditScore: Math.floor(Math.random() * 300) + 550,
         wallets: [
           {
             id: 'wallet-1',
-            currency: 'CAD',
-            balance: 15420.50,
+            currency: 'USD',
+            balance: Math.random() * 50000 + 1000,
             isBaseCurrency: true,
             createdAt: '2024-01-01T00:00:00Z',
             lastTransactionAt: '2024-01-20T14:30:00Z'
           },
           {
             id: 'wallet-2',
-            currency: 'USD',
-            balance: 8750.25,
+            currency: 'CAD',
+            balance: Math.random() * 20000 + 500,
             isBaseCurrency: false,
             createdAt: '2024-01-05T00:00:00Z',
             lastTransactionAt: '2024-01-19T16:45:00Z'
@@ -101,7 +101,7 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
           {
             id: 'wallet-3',
             currency: 'GBP',
-            balance: 3200.75,
+            balance: Math.random() * 15000 + 300,
             isBaseCurrency: false,
             createdAt: '2024-01-10T00:00:00Z',
             lastTransactionAt: '2024-01-18T11:20:00Z'
@@ -109,7 +109,7 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
           {
             id: 'wallet-4',
             currency: 'EUR',
-            balance: 5680.90,
+            balance: Math.random() * 25000 + 800,
             isBaseCurrency: false,
             createdAt: '2024-01-12T00:00:00Z',
             lastTransactionAt: '2024-01-17T09:15:00Z'
@@ -117,22 +117,134 @@ const CustomerDetailPage: React.FC<CustomerDetailPageProps> = () => {
           {
             id: 'wallet-5',
             currency: 'XAF',
-            balance: 2500000.00,
+            balance: Math.random() * 5000000 + 100000,
             isBaseCurrency: false,
             createdAt: '2024-01-15T00:00:00Z',
             lastTransactionAt: '2024-01-16T13:30:00Z'
           }
         ],
-        cashBalance: 25000.00,
-        savingsBalance: 45000.00,
-        investmentBalance: 75000.00,
-        accruedInterest: 1250.75,
+        cashBalance: Math.random() * 100000 + 5000,
+        savingsBalance: Math.random() * 200000 + 10000,
+        investmentBalance: Math.random() * 500000 + 25000,
+        accruedInterest: Math.random() * 5000 + 100,
         profilePhotoUrl: '/images/profile.jpg',
         birthdayNotificationFlag: true
       };
 
-      setCustomer(mockPersonalAccount);
-      setCustomerType('personal'); // Default to personal for mock
+      // Determine customer type based on ID or random for demo
+      const isBusinessAccount = customerId.includes('business') || Math.random() > 0.7;
+      
+      if (isBusinessAccount) {
+        const mockBusinessAccount: BusinessAccount = {
+          id: customerId,
+          wiremiBusinessId: `WRMB${customerId.replace('customer-', '').padStart(6, '0')}`,
+          businessName: ['Tech Solutions Inc', 'Global Trading Ltd', 'Innovation Corp', 'Digital Services LLC'][Math.floor(Math.random() * 4)],
+          businessRegistrationNumber: `REG${Math.floor(Math.random() * 1000000)}`,
+          businessType: ['MERCHANT', 'SCHOOL', 'OTHER'][Math.floor(Math.random() * 3)] as any,
+          primaryContact: {
+            name: 'John Smith',
+            email: 'john.smith@business.com',
+            phone: '+1-555-0123'
+          },
+          businessOwner: {
+            firstName: 'John',
+            lastName: 'Smith',
+            email: 'john.smith@business.com',
+            phone: '+1-555-0123',
+            dateOfBirth: '1980-05-15',
+            nationality: 'American',
+            kycStatus: [KYCStatus.VERIFIED, KYCStatus.PENDING, KYCStatus.REJECTED][Math.floor(Math.random() * 3)],
+            kycDocuments: {
+              idType: 'NATIONAL_ID' as any,
+              idNumber: `ID${Math.floor(Math.random() * 1000000000)}`,
+              frontImageUrl: '/images/director-id-front.jpg',
+              backImageUrl: '/images/director-id-back.jpg',
+              selfieUrl: '/images/director-selfie.jpg',
+              submissionDate: '2024-01-10T09:00:00Z',
+              reviewDate: '2024-01-12T14:30:00Z'
+            },
+            isDirector: true,
+            shareholdingPercentage: 75
+          },
+          country: 'United States',
+          region: 'California',
+          city: 'San Francisco',
+          postalCode: '94102',
+          businessAddress: {
+            street: '123 Business Ave',
+            suite: 'Suite 100',
+            city: 'San Francisco',
+            region: 'California',
+            postalCode: '94102',
+            country: 'United States'
+          },
+          taxIdentificationNumber: `TAX${Math.floor(Math.random() * 1000000000)}`,
+          accountPin: '****',
+          transactionPin: '****',
+          referralCode: `BREF${Math.floor(Math.random() * 1000000)}`,
+          kycStatus: [KYCStatus.VERIFIED, KYCStatus.PENDING, KYCStatus.REJECTED][Math.floor(Math.random() * 3)],
+          kycDocuments: {
+            certificateOfIncorporation: '/documents/certificate.pdf',
+            taxRegistrationCertificate: '/documents/tax-cert.pdf',
+            directorId: {
+              idNumber: `DID${Math.floor(Math.random() * 1000000000)}`,
+              frontImageUrl: '/images/director-id-front.jpg',
+              backImageUrl: '/images/director-id-back.jpg',
+              selfieUrl: '/images/director-selfie.jpg'
+            },
+            submissionDate: '2024-01-10T09:00:00Z',
+            reviewDate: '2024-01-12T14:30:00Z'
+          },
+          accountStatus: BusinessAccountStatus.ACTIVE,
+          userTier: [CustomerTier.BRONZE, CustomerTier.SILVER, CustomerTier.GOLD, CustomerTier.PLATINUM][Math.floor(Math.random() * 4)],
+          accountCreationDate: '2024-01-01T00:00:00Z',
+          lastLogin: {
+            timestamp: '2024-01-20T15:45:00Z',
+            deviceInfo: ['MacBook Pro', 'Windows Desktop', 'iPad Pro', 'Surface Laptop'][Math.floor(Math.random() * 4)],
+            ipAddress: `192.168.1.${Math.floor(Math.random() * 255)}`,
+            userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+          },
+          riskScore: Math.floor(Math.random() * 100),
+          creditScore: Math.floor(Math.random() * 300) + 550,
+          wallets: [
+            {
+              id: 'wallet-b1',
+              currency: 'USD',
+              balance: Math.random() * 500000 + 10000,
+              isBaseCurrency: true,
+              createdAt: '2024-01-01T00:00:00Z',
+              lastTransactionAt: '2024-01-20T14:30:00Z'
+            },
+            {
+              id: 'wallet-b2',
+              currency: 'EUR',
+              balance: Math.random() * 200000 + 5000,
+              isBaseCurrency: false,
+              createdAt: '2024-01-05T00:00:00Z',
+              lastTransactionAt: '2024-01-19T16:45:00Z'
+            },
+            {
+              id: 'wallet-b3',
+              currency: 'GBP',
+              balance: Math.random() * 150000 + 3000,
+              isBaseCurrency: false,
+              createdAt: '2024-01-10T00:00:00Z',
+              lastTransactionAt: '2024-01-18T11:20:00Z'
+            }
+          ],
+          cashBalance: Math.random() * 1000000 + 50000,
+          savingsBalance: Math.random() * 2000000 + 100000,
+          investmentBalance: Math.random() * 5000000 + 250000,
+          accruedInterest: Math.random() * 50000 + 1000,
+          profileLogoUrl: '/images/business-logo.jpg'
+        };
+        
+        setCustomer(mockBusinessAccount);
+        setCustomerType('business');
+      } else {
+        setCustomer(mockPersonalAccount);
+        setCustomerType('personal');
+      }
     } catch (error) {
       console.error('Failed to load customer details:', error);
     } finally {

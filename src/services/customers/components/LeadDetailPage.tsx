@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Mail, Phone, Calendar, ExternalLink, UserPlus, MessageSquare } from 'lucide-react';
+import { ArrowLeft, User, Mail, Phone, Calendar, ExternalLink, UserPlus, MessageSquare, MapPin, Clock } from 'lucide-react';
 import { Lead, LeadStatus } from '../../../types';
 import PageHeader from '../../../components/Common/PageHeader';
 
@@ -28,11 +28,11 @@ const LeadDetailPage: React.FC = () => {
       const mockLead: Lead = {
         id: leadId,
         contactInfo: {
-          email: 'potential.customer@example.com',
-          phone: '+1-555-9876'
+          email: `lead${leadId.slice(-1)}@example.com`,
+          phone: `+1-555-${Math.floor(Math.random() * 9000) + 1000}`
         },
-        leadSource: 'Website Registration',
-        leadStatus: LeadStatus.NEW,
+        leadSource: ['Website Registration', 'Social Media', 'Referral', 'Cold Outreach', 'Marketing Campaign'][Math.floor(Math.random() * 5)],
+        leadStatus: [LeadStatus.NEW, LeadStatus.CONTACTED, LeadStatus.CONVERTED][Math.floor(Math.random() * 3)],
         createdAt: '2024-01-20T10:30:00Z', // Changed to ISO string
         updatedAt: '2024-01-21T14:15:00Z', // Added updatedAt
         lastContactedAt: '2024-01-21T14:15:00Z'
@@ -207,7 +207,7 @@ const LeadDetailPage: React.FC = () => {
       </div>
 
       {/* Lead Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Contact Information */}
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4">
@@ -235,9 +235,37 @@ const LeadDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Timeline */}
+        {/* Lead Source & Status */}
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4">
+            Lead Information
+          </h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600 dark:text-dark-400">Lead Source:</span>
+              <span className="font-medium text-gray-900 dark:text-dark-100">
+                {lead.leadSource}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600 dark:text-dark-400">Current Status:</span>
+              <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getStatusBadge(lead.leadStatus)}`}>
+                {lead.leadStatus}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600 dark:text-dark-400">Lead ID:</span>
+              <span className="font-medium text-gray-900 dark:text-dark-100">
+                {lead.id}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Timeline */}
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
+            <Clock className="mr-2 text-indigo-500" size={20} />
             Timeline
           </h3>
           <div className="space-y-4">
@@ -259,7 +287,7 @@ const LeadDetailPage: React.FC = () => {
         </div>
 
         {/* Actions */}
-        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6 lg:col-span-2">
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6 lg:col-span-3">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4">
             Lead Actions
           </h3>
@@ -290,7 +318,7 @@ const LeadDetailPage: React.FC = () => {
         </div>
 
         {/* Lead Activity/Conversation (Mock) */}
-        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6 lg:col-span-2">
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6 lg:col-span-3">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
             <MessageSquare className="mr-2 text-blue-500" size={20} />
             Lead Activity & Notes
@@ -318,6 +346,49 @@ const LeadDetailPage: React.FC = () => {
                 <p className="text-sm text-gray-600 dark:text-dark-400">Status updated to 'Contacted'.</p>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Lead Scoring & Qualification */}
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6 lg:col-span-3">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
+            <User className="mr-2 text-purple-500" size={20} />
+            Lead Qualification
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-4">
+              <h4 className="font-medium text-gray-900 dark:text-dark-100 mb-2">Lead Score</h4>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-1">
+                  {Math.floor(Math.random() * 100)}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-dark-400">
+                  Qualification Score
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-4">
+              <h4 className="font-medium text-gray-900 dark:text-dark-100 mb-2">Engagement Level</h4>
+              <div className="text-center">
+                <div className="text-lg font-bold text-green-600 mb-1">
+                  {['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)]}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-dark-400">
+                  Based on interactions
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 dark:bg-dark-700 rounded-lg p-4">
+              <h4 className="font-medium text-gray-900 dark:text-dark-100 mb-2">Conversion Probability</h4>
+              <div className="text-center">
+                <div className="text-lg font-bold text-purple-600 mb-1">
+                  {Math.floor(Math.random() * 100)}%
+                </div>
+                <div className="text-sm text-gray-600 dark:text-dark-400">
+                  Likelihood to convert
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

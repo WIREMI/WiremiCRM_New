@@ -39,6 +39,18 @@ const PersonalOverviewTab: React.FC<PersonalOverviewTabProps> = ({ customer }) =
     return 'bg-green-100';
   };
 
+  const handleResetDeviceId = async () => {
+    if (window.confirm('Are you sure you want to reset the device ID for this user? This will require them to re-authenticate on all devices.')) {
+      try {
+        // TODO: Call API to reset device ID
+        console.log('Resetting device ID for user:', customer.id);
+        alert('Device ID has been reset successfully. The user will need to re-authenticate on all devices.');
+      } catch (error) {
+        console.error('Failed to reset device ID:', error);
+        alert('Failed to reset device ID. Please try again.');
+      }
+    }
+  };
   return (
     <div className="space-y-6">
       {/* Account Type Header */}
@@ -48,6 +60,60 @@ const PersonalOverviewTab: React.FC<PersonalOverviewTabProps> = ({ customer }) =
           <div>
             <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100">Personal Account Profile</h3>
             <p className="text-sm text-blue-700 dark:text-blue-300">Individual customer account with personal banking services</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Device & Security Management */}
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-gray-200 dark:border-dark-700 p-6">
+        <h4 className="text-lg font-semibold text-gray-900 dark:text-dark-100 mb-4 flex items-center">
+          <Smartphone className="mr-2 text-cyan-500" size={20} />
+          Device & Security Management
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div className="flex justify-between">
+              <span className="text-gray-600 dark:text-dark-400">Device ID:</span>
+              <span className="font-medium text-gray-900 dark:text-dark-100 font-mono">
+                {customer.lastLogin.deviceInfo.replace(/[^a-zA-Z0-9]/g, '').substring(0, 12)}...
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600 dark:text-dark-400">Last Login Device:</span>
+              <span className="font-medium text-gray-900 dark:text-dark-100">
+                {customer.lastLogin.deviceInfo}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600 dark:text-dark-400">Last Login IP:</span>
+              <span className="font-medium text-gray-900 dark:text-dark-100">
+                {customer.lastLogin.ipAddress}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600 dark:text-dark-400">User Agent:</span>
+              <span className="font-medium text-gray-900 dark:text-dark-100 text-xs truncate max-w-xs">
+                {customer.lastLogin.userAgent}
+              </span>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+              <h5 className="font-medium text-red-900 dark:text-red-100 mb-2 flex items-center">
+                <Shield className="mr-2" size={16} />
+                Security Actions
+              </h5>
+              <p className="text-sm text-red-700 dark:text-red-300 mb-3">
+                Reset device ID to force re-authentication on all devices. Use this if you suspect unauthorized access.
+              </p>
+              <button
+                onClick={handleResetDeviceId}
+                className="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
+              >
+                <RefreshCw size={16} className="mr-2" />
+                Reset Device ID
+              </button>
+            </div>
           </div>
         </div>
       </div>
