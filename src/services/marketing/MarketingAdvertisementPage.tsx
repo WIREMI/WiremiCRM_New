@@ -230,7 +230,7 @@ const MarketingAdvertisementPage: React.FC = () => {
 
         {/* Tab Content */}
         <div className="p-6">
-          {activeTab === 'overview' && <AnalyticsOverviewTab stats={stats} />}
+          {activeTab === 'overview' && <AnalyticsOverviewTab stats={stats} onCreateCampaign={handleCreateCampaign} />}
           {activeTab === 'ai-content' && <AIContentGenerationTab />}
           {activeTab === 'social-media' && <SocialMediaManagementTab />}
           {activeTab === 'campaigns' && <CampaignManagementTab />}
