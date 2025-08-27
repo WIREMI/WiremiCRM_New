@@ -13,6 +13,7 @@ import VirtualCards from '../services/virtual-cards/VirtualCards';
 import MessagingCenter from '../services/messaging/MessagingCenter';
 import SupportTicketing from '../services/support/SupportTicketing';
 import SuperAdminPage from '../services/admin/SuperAdminPage';
+import MarketingAdvertisementPage from '../services/marketing/MarketingAdvertisementPage';
 import CustomerDetailPage from '../services/customers/components/CustomerDetailPage';
 import LeadDetailPage from '../services/customers/components/LeadDetailPage';
 
@@ -40,11 +41,10 @@ const AppRouter: React.FC = () => {
           <Route path="support" element={<SupportTicketing />} />
           <Route path="products" element={<div className="p-6">Product Management - Coming Soon</div>} />
           <Route path="admin" element={<SuperAdminPage />} />
-          <Route path="marketing" element={<div className="p-6">Marketing & Growth - Coming Soon</div>} />
+          <Route path="marketing-advertisement" element={<MarketingAdvertisementPage />} />
           <Route path="loyalty" element={<div className="p-6">Loyalty & Rewards - Coming Soon</div>} />
           <Route path="reports" element={<div className="p-6">BI Reporting - Coming Soon</div>} />
           <Route path="alerts" element={<div className="p-6">Alert Management - Coming Soon</div>} />
-          <Route path="advertising" element={<div className="p-6">Advertising & Notifications - Coming Soon</div>} />
         </Route>
         
         {/* Redirect to dashboard for any unmatched routes */}
