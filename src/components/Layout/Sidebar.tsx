@@ -49,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     { path: '/support', icon: HeadphonesIcon, label: 'Support & Tickets', color: 'text-violet-500' },
     { path: '/products', icon: Package, label: 'Product Management', color: 'text-slate-500' },
     { path: '/admin', icon: Settings, label: 'Super Admin', color: 'text-gray-600' },
-    { path: '/marketing-advertisement', icon: TrendingUp, label: 'Marketing & Advertisement', color: 'text-rose-500' },
+    { path: '/marketing', icon: Megaphone, label: 'Marketing & Advertisement', color: 'text-rose-500' },
     { path: '/loyalty', icon: Gift, label: 'Loyalty & Rewards', color: 'text-amber-500' },
     { path: '/reports', icon: PieChart, label: 'BI Reporting', color: 'text-blue-600' },
     { path: '/alerts', icon: AlertTriangle, label: 'Alert Management', color: 'text-red-500' },
