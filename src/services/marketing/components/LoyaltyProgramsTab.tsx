@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Gift, Star, Award, Users, TrendingUp, DollarSign, Target, Plus, Edit, Eye, Settings } from 'lucide-react';
+import { Gift, Star, Award, Users, TrendingUp, DollarSign, Target, Plus, Edit, Eye, Settings, BarChart3 } from 'lucide-react';
 
 interface LoyaltyProgram {
   id: string;
