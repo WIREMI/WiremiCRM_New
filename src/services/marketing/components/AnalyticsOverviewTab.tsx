@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Users, Target, DollarSign, Eye, MessageSquare, Share2, Heart, Calendar, Filter } from 'lucide-react';
+import { TrendingUp, Users, Target, DollarSign, Eye, MessageSquare, Share2, Heart, Calendar, Filter, Video, Image, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
 
 interface AnalyticsOverviewTabProps {
   stats: {
@@ -15,9 +15,10 @@ interface AnalyticsOverviewTabProps {
     loyaltyMembers: number;
     rewardsDistributed: number;
   };
+  onCreateCampaign?: () => void;
 }
 
-const AnalyticsOverviewTab: React.FC<AnalyticsOverviewTabProps> = ({ stats }) => {
+const AnalyticsOverviewTab: React.FC<AnalyticsOverviewTabProps> = ({ stats, onCreateCampaign }) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState('30d');
   const [selectedMetric, setSelectedMetric] = useState('all');
 
@@ -267,7 +268,7 @@ const AnalyticsOverviewTab: React.FC<AnalyticsOverviewTabProps> = ({ stats }) =>
             Recent Campaigns
           </h4>
           <button
-            onClick={handleCreateCampaign}
+            onClick={onCreateCampaign}
             className="text-blue-600 hover:text-blue-700 text-sm font-medium"
           >
             View All Campaigns
