@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, UserPlus, Calendar, CheckCircle, Clock, AlertTriangle, MessageSquare, FileText, Video, Image, Settings, Eye, Edit } from 'lucide-react';
+import { Users, UserPlus, Calendar, CheckCircle, Clock, AlertTriangle, MessageSquare, FileText, Video, Image, Settings, Eye, Edit, Plus } from 'lucide-react';
 
 interface TeamMember {
   id: string;
