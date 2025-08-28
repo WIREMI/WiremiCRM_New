@@ -16,6 +16,7 @@ import SuperAdminPage from '../services/admin/SuperAdminPage';
 import CustomerDetailPage from '../services/customers/components/CustomerDetailPage';
 import LeadDetailPage from '../services/customers/components/LeadDetailPage';
 import MarketingAdvertisementPage from '../services/marketing/MarketingAdvertisementPage';
+import ProductManagement from '../services/products/ProductManagement';
 
 const AppRouter: React.FC = () => {
   return (
@@ -39,12 +40,11 @@ const AppRouter: React.FC = () => {
           <Route path="cards" element={<VirtualCards />} />
           <Route path="messaging" element={<MessagingCenter />} />
           <Route path="support" element={<SupportTicketing />} />
-          <Route path="products" element={<div className="p-6">Product Management - Coming Soon</div>} />
-          <Route path="admin" element={<SuperAdminPage />} />
+          <Route path="products" element={<ProductManagement />} />
           <Route path="marketing" element={<MarketingAdvertisementPage />} />
-          <Route path="loyalty" element={<div className="p-6">Loyalty & Rewards - Coming Soon</div>} />
           <Route path="reports" element={<div className="p-6">BI Reporting - Coming Soon</div>} />
           <Route path="alerts" element={<div className="p-6">Alert Management - Coming Soon</div>} />
+          <Route path="admin" element={<SuperAdminPage />} />
         </Route>
         
         {/* Redirect to dashboard for any unmatched routes */}
