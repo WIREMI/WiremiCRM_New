@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, MapPin, Phone, Mail, User, Shield, Clock, Smartphone, Lock } from 'lucide-react';
+import { Calendar, MapPin, Phone, Mail, User, Shield, Clock, Smartphone, Lock, RefreshCw } from 'lucide-react';
 import { PersonalAccount, AccountStatus, CustomerTier } from '../../../../types';
 
 interface PersonalOverviewTabProps {
